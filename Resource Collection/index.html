@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Collection</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- SheetJS (Untuk Parsing & Create Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Chart.js (Untuk Pie Chart) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid #dc2626; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input[type="date"], input[type="month"] { position: relative; }
+        /* Scrollbar untuk tabel */
+        .table-container::-webkit-scrollbar { width: 6px; height: 6px;}
+        .table-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px;}
+        
+        /* Custom Checkbox Dropdown */
+        .multiselect-dropdown {
+            display: none;
+            position: absolute;
+            z-index: 50;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-top: 4px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .multiselect-dropdown.show { display: block; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans pb-10">
+
+    <!-- Navbar -->
+    <nav class="bg-red-600 text-white p-3 sm:p-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <!-- LOGO: ACTIVE BUTTON KE HOME -->
+            <div class="flex w-full md:w-auto justify-between md:justify-start items-center gap-4 sm:gap-6">
+                <div class="flex items-center cursor-pointer hover:opacity-90 transition shrink-0" onclick="goToHome()">
+                    <!-- Logo Image -->
+                    <img src="images/logo.png" alt="Logo" class="h-8 sm:h-10 mr-3 object-contain" onerror="this.onerror=null; this.outerHTML='<i class=\'fas fa-boxes mr-2 text-2xl\'></i>';">
+                    <div class="flex flex-col">
+                        <h1 class="text-xl font-bold leading-tight">Resource Collection</h1>
+                    </div>
+                </div>
+
+                <div id="navBackBtn" class="hidden border-l border-red-400 pl-4 shrink-0">
+                    <button onclick="goToHome()" class="text-white hover:text-yellow-300 font-medium text-sm flex items-center transition">
+                        <i class="fas fa-arrow-left mr-1"></i> <span class="hidden sm:inline">Menu Utama</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- USER INFO -->
+            <div id="userInfo" class="hidden text-sm font-medium w-full md:w-auto flex-wrap justify-center md:justify-end items-center gap-2 sm:gap-4 bg-red-700/40 py-2 px-4 rounded-xl border border-red-500/50">
+                <div class="flex items-center gap-1 border-r border-red-500/50 pr-2 sm:pr-4">
+                    <i class="fas fa-user text-red-200"></i> 
+                    <span id="displayUser" class="truncate max-w-[120px] font-semibold">User</span>
+                </div>
+                <div class="flex items-center gap-1 border-r border-red-500/50 pr-2 sm:pr-4">
+                    <i class="fas fa-map-marker-alt text-yellow-300"></i>
+                    <span id="displayDepot" class="font-bold text-yellow-300 truncate max-w-[140px]">Depot</span>
+                </div>
+                <div class="flex items-center gap-2 pl-1">
+                    <span id="displayRole" class="px-2 py-0.5 bg-red-800 rounded text-[10px] uppercase border border-red-500 shadow-inner font-bold tracking-wider">ROLE</span>
+                    <button onclick="openRequestPinModal()" class="hover:text-red-100 text-xs bg-orange-600 hover:bg-orange-700 px-3 py-1.5 rounded transition shadow flex items-center ml-2" title="Ganti PIN">
+                        <i class="fas fa-key"></i>
+                    </button>
+                    <button onclick="logout()" class="hover:text-red-100 text-xs bg-red-800 hover:bg-red-900 px-3 py-1.5 rounded transition shadow flex items-center"><i class="fas fa-sign-out-alt mr-1"></i><span class="hidden sm:inline">Keluar</span></button>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto p-4 md:p-6 mt-4">
+        
+        <!-- SECTION 1A: LOGIN -->
+        <div id="loginSection" class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
+            <div class="text-center mb-6">
+                <!-- Logo di Login Card -->
+                <img src="images/blooby.png" alt="Blooby" class="h-24 mx-auto mb-3 object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'bg-red-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4\'><i class=\'fas fa-cubes text-3xl text-red-600\'></i></div>';">
+                <h2 class="text-2xl font-bold text-gray-800">Login</h2>
+                <p class="text-gray-500 text-sm mt-1">Resource Collection</p>
+            </div>
+            
+            <div id="loginError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm"></div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">User ID</label>
+                    <input type="text" id="userid" onkeypress="handleLoginEnter(event)" class="w-full px-4 py-2 border rounded-lg focus:ring-red-500 focus:border-red-500" placeholder="Contoh: ADM-SRG">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">PIN</label>
+                    <input type="password" id="pin" onkeypress="handleLoginEnter(event)" class="w-full px-4 py-2 border rounded-lg focus:ring-red-500 focus:border-red-500" placeholder="****">
+                </div>
+                <button id="btnLogin" onclick="processLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-lg flex justify-center items-center mt-6 transition duration-200">
+                    <span id="btnLoginText">Masuk ke Portal</span>
+                    <div id="loginLoader" class="loader hidden ml-2 border-t-white w-5 h-5 border-2"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 2: DASHBOARD MENU -->
+        <div id="dashboardSection" class="hidden max-w-6xl mx-auto mt-6">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="mb-8 border-b pb-4">
+                    <h2 class="text-3xl font-extrabold text-gray-800">Selamat Datang di Portal Nippon ReColl</h2>
+                    <p class="text-gray-500 mt-2">Pilih modul aplikasi yang ingin Anda akses hari ini.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 1. Claim System (Active for all) -->
+                    <div onclick="openModule('claim')" class="bg-white rounded-xl shadow border border-gray-100 cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1 border-t-4 border-t-red-600 p-6 flex flex-col items-center text-center">
+                        <div class="bg-red-50 w-16 h-16 flex items-center justify-center rounded-full mb-4">
+                            <i class="fas fa-file-invoice-dollar text-3xl text-red-600"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">Claim System</h3>
+                        <p class="text-xs text-gray-500 mt-2">Klaim Promo Cashback CN, Riwayat & Dashboard.</p>
+                    </div>
+
+                    <!-- RBAC MENU 1: Kelola Akses (Hidden by default, shown for OSC/Supervisor) -->
+                    <div id="menuKelolaAkses" onclick="openModule('manageAccess')" class="hidden bg-white rounded-xl shadow border border-gray-100 cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1 border-t-4 border-t-blue-600 p-6 flex flex-col items-center text-center">
+                        <div class="bg-blue-50 w-16 h-16 flex items-center justify-center rounded-full mb-4">
+                            <i class="fas fa-users-cog text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">Kelola Akses</h3>
+                        <p class="text-xs text-gray-500 mt-2">Otorisasi dan pengaturan hak akses pengguna depot.</p>
+                    </div>
+
+                    <!-- RBAC MENU 2: Tambahkan Akun / Request Akun (Shown to all, text dynamic) -->
+                    <div id="menuTambahAkun" onclick="openModule('addAccount')" class="hidden bg-white rounded-xl shadow border border-gray-100 cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1 border-t-4 border-t-green-600 p-6 flex flex-col items-center text-center">
+                        <div class="bg-green-50 w-16 h-16 flex items-center justify-center rounded-full mb-4">
+                            <i class="fas fa-user-plus text-3xl text-green-600"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800" id="menuTambahAkunTitle">Tambahkan Akun</h3>
+                        <p class="text-xs text-gray-500 mt-2" id="menuTambahAkunDesc">Pendaftaran akun pengguna dan admin depot baru.</p>
+                    </div>
+
+                    <!-- Placeholder Menu 1 -->
+                    <div class="bg-gray-50 rounded-xl shadow border border-gray-100 border-t-4 border-t-gray-400 p-6 flex flex-col items-center text-center opacity-70 cursor-not-allowed">
+                        <div class="bg-gray-200 w-16 h-16 flex items-center justify-center rounded-full mb-4">
+                            <i class="fas fa-database text-3xl text-gray-500"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-600">Update Data</h3>
+                        <span class="mt-3 px-3 py-1 bg-gray-200 text-gray-600 text-[10px] font-bold rounded-full uppercase tracking-wider">Segera Hadir</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: WORKSPACE (CLAIM SYSTEM) -->
+        <div id="workspaceSection" class="hidden">
+            
+            <!-- TABS MENU -->
+            <div class="flex overflow-x-auto border-b border-gray-300 mb-6 bg-white rounded-t-xl px-4 pt-4 whitespace-nowrap scrollbar-hide">
+                <button onclick="switchTab('single')" id="tabBtnSingle" class="py-3 px-6 font-bold border-b-4 border-red-600 text-red-600 transition-colors shrink-0">
+                    <i class="fas fa-keyboard mr-1"></i> Input Satuan
+                </button>
+                <button onclick="switchTab('mass')" id="tabBtnMass" class="py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0">
+                    <i class="fas fa-file-excel mr-1"></i> Mass Upload (Excel)
+                </button>
+                <button onclick="switchTab('history'); fetchDashboardData();" id="tabBtnHistory" class="py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0">
+                    <i class="fas fa-history mr-1"></i> History
+                </button>
+                <button onclick="switchTab('summary'); fetchDashboardData();" id="tabBtnSummary" class="py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0">
+                    <i class="fas fa-chart-pie mr-1"></i> Summary
+                </button>
+            </div>
+
+            <!-- TAB: INPUT SATUAN -->
+            <div id="tabSingle" class="bg-white rounded-b-xl shadow-lg p-6 md:p-8 relative block">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Form Input Klaim</h2>
+                
+                <!-- Peringatan Akses Manual -->
+                <div id="alertNoManual" class="hidden bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded mb-4 text-sm font-bold">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Anda tidak memiliki hak akses untuk Input Manual. Hubungi OSC atau Supervisor.
+                </div>
+
+                <form id="claimForm" onsubmit="event.preventDefault(); submitSingleClaim();">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Tanggal Claim</label>
+                            <input type="text" id="tglClaim" required class="w-full px-3 py-2 border rounded bg-white focus:border-red-500" placeholder="DD-MM-YYYY">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">No Document <span id="docStatus" class="text-blue-600 text-[10px] ml-1 font-bold">(Auto Fill)</span></label>
+                            <input type="text" id="noDoc" required onkeyup="handleNoDocInput()" class="w-full px-3 py-2 border-2 rounded border-blue-400 bg-blue-50 focus:border-blue-600 font-semibold" placeholder="Ketik No Doc di sini...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">DC / Depot</label>
+                            <input type="text" id="depot" readonly class="w-full px-3 py-2 border rounded bg-gray-200 font-bold text-gray-700 cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <!-- READONLY FIELDS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Code Campaign <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="codeCampaign" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed" placeholder="Terkunci & Otomatis">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nama Campaign <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="campaign" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 font-medium cursor-not-allowed" placeholder="Terkunci & Otomatis">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 border rounded-lg">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cust Code <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="custCode" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cust Name (Toko) <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="custName" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-800 font-bold cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Net Value Include Tax <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="netValue" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-700 font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Net Weight / Volume <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="vols" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cashback CN (Net) <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="cashback" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-red-600 font-bold cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Periode Start <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="periodStart" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Campaign End <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="campaignEnd" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Status Pajak <i class="fas fa-lock text-gray-400 text-[10px] ml-1"></i></label>
+                            <input type="text" id="statusPajak" readonly class="w-full px-3 py-2 border rounded bg-gray-200 text-gray-800 font-bold cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <!-- MANUAL FIELDS -->
+                    <div class="bg-blue-50 p-5 border border-blue-200 rounded-lg mb-6 shadow-sm">
+                        <h3 class="text-sm font-bold text-blue-800 mb-4 border-b border-blue-200 pb-2"><i class="fas fa-edit mr-1"></i> Kolom Isian Depot (Manual)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase mb-1">No KTP</label>
+                                <input type="text" id="noKtp" class="w-full px-3 py-2 border-2 border-blue-300 rounded focus:border-blue-600 bg-white" placeholder="(Opsional)">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase mb-1">No NPWP</label>
+                                <input type="text" id="noNpwp" class="w-full px-3 py-2 border-2 border-blue-300 rounded focus:border-blue-600 bg-white" placeholder="(Opsional)">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Tgl Lunas <i class="fas fa-calendar-alt ml-1"></i></label>
+                                <input type="date" id="tglLunas" required class="w-full px-3 py-2 border-2 border-blue-300 rounded focus:border-blue-600 bg-white cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Bulan Tagihan <i class="fas fa-calendar-week ml-1"></i></label>
+                                <input type="month" id="bulanTagihan" required class="w-full px-3 py-2 border-2 border-blue-300 rounded focus:border-blue-600 bg-white cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Lewat TOP <i class="fas fa-keyboard ml-1"></i></label>
+                                <input type="number" id="lewatTop" required class="w-full px-3 py-2 border-2 border-blue-300 rounded focus:border-blue-600 bg-white" placeholder="Ex: 77">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end border-t pt-4">
+                        <button type="button" onclick="resetSingleForm()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg mr-3">Reset</button>
+                        <button type="submit" id="btnSubmitSingle" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded-lg flex items-center shadow-md disabled:bg-gray-400">
+                            <span id="btnSubmitTextSingle"><i class="fas fa-cloud-upload-alt mr-2"></i> Upload Form</span>
+                            <div id="submitLoaderSingle" class="loader hidden ml-2 border-t-white w-5 h-5 border-2"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB: MASS UPLOAD BATCH -->
+            <div id="tabMass" class="hidden bg-white rounded-b-xl shadow-lg p-6 md:p-8 relative">
+                <div class="flex justify-between items-center border-b pb-3 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Mass Upload Simpel (Excel)</h2>
+                        <p class="text-sm text-gray-500 mt-1">Menggunakan sistem Batch (10 data per request) agar cepat dan aman.</p>
+                    </div>
+                    <button onclick="downloadTemplate()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded shadow">
+                        <i class="fas fa-download mr-1"></i> Download Template Baru
+                    </button>
+                </div>
+
+                <!-- Peringatan Akses Mass -->
+                <div id="alertNoMass" class="hidden bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded mb-4 text-sm font-bold">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Anda tidak memiliki hak akses untuk Mass Upload. Hubungi OSC atau Supervisor.
+                </div>
+
+                <div id="massUploadFormArea" class="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg bg-blue-50 text-center">
+                    <i class="fas fa-file-excel text-4xl text-green-600 mb-2"></i>
+                    <p class="text-sm text-gray-600 mb-3">Gunakan template <b>6 Kolom Utama</b> saja. Upload di sini.</p>
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="block w-full max-w-sm mx-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer">
+                </div>
+
+                <!-- Preview Table -->
+                <div id="massPreviewContainer" class="hidden mb-6">
+                    <h3 class="font-bold text-gray-700 mb-2">Preview Data Excel (<span id="massCount">0</span> Baris)</h3>
+                    <div class="table-container overflow-x-auto overflow-y-auto max-h-80 border rounded bg-white">
+                        <table class="min-w-full text-xs text-left whitespace-nowrap">
+                            <thead class="bg-gray-100 text-gray-600 sticky top-0 shadow-sm">
+                                <tr>
+                                    <th class="px-4 py-2">Status DB</th>
+                                    <th class="px-4 py-2">No Document</th>
+                                    <th class="px-4 py-2">KTP / NPWP</th>
+                                    <th class="px-4 py-2">Tgl Lunas</th>
+                                    <th class="px-4 py-2">Bln Tagihan</th>
+                                    <th class="px-4 py-2">Lewat TOP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="massTableBody" class="divide-y divide-gray-100">
+                                <!-- Isi tabel via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end border-t pt-4">
+                    <button type="button" onclick="resetMassForm()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg mr-3">Batal</button>
+                    <button type="button" id="btnSubmitMass" onclick="submitMassClaim()" disabled class="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg flex items-center shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        <span id="btnSubmitTextMass"><i class="fas fa-cloud-upload-alt mr-2"></i> Proses Upload Massal</span>
+                        <div id="submitLoaderMass" class="loader hidden ml-2 border-t-white w-5 h-5 border-2"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB: HISTORY CLAIM -->
+            <div id="tabHistory" class="hidden bg-white rounded-b-xl shadow-lg p-6 md:p-8 relative">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Riwayat Klaim (History)</h2>
+                        <p class="text-sm text-gray-500 mt-1">Daftar toko dan campaign yang telah diajukan klaimnya.</p>
+                    </div>
+                    <button onclick="fetchDashboardData()" class="bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-bold py-2 px-4 rounded flex items-center transition">
+                        <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+                    </button>
+                </div>
+
+                <!-- Filters for History -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 flex flex-wrap gap-4 items-end relative z-20">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Status</label>
+                        <select id="histFilterStatus" onchange="renderHistoryTable()" class="px-3 py-2 border border-gray-300 rounded bg-white text-sm focus:ring-2 focus:ring-blue-500">
+                            <option value="ALL">-- Semua Status --</option>
+                            <option value="Done">Selesai (Done)</option>
+                            <option value="Not Yet">Diajukan (Not Yet)</option>
+                        </select>
+                    </div>
+                    <!-- Multiselect Filters -->
+                    <div id="histFilterOscContainer" class="hidden relative min-w-[150px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih OSC</label>
+                        <button type="button" onclick="toggleMultiSelect('histOscDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih OSC --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="histOscDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                    <div id="histFilterDepotContainer" class="hidden relative min-w-[150px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Depot</label>
+                        <button type="button" onclick="toggleMultiSelect('histDepotDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih Depot --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="histDepotDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                    <div class="relative min-w-[200px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Campaign</label>
+                        <button type="button" onclick="toggleMultiSelect('histCampDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih Campaign --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="histCampDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="historyLoader" class="text-center py-10 hidden">
+                    <div class="loader mx-auto mb-3 border-t-blue-600 border-gray-200"></div>
+                    <p class="text-gray-500">Memuat riwayat klaim...</p>
+                </div>
+
+                <div class="overflow-x-auto table-container">
+                    <table class="w-full text-left border-collapse border rounded-lg bg-white whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">No Document</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">Kode Toko</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">Nama Toko</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">Kd Campaign</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">Nama Campaign</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase">Periode</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase text-right">Total Claim</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase text-center">Status</th>
+                                <th class="p-3 text-xs font-bold text-gray-600 uppercase text-center">Tgl Proses</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-gray-100">
+                            <!-- Diisi via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: SUMMARY & DASHBOARD -->
+            <div id="tabSummary" class="hidden bg-white rounded-b-xl shadow-lg p-6 md:p-8 relative">
+                <div class="border-b pb-4 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Summary Campaign</h2>
+                    <p class="text-sm text-gray-500 mt-1">Statistik klaim berdasarkan total reward, pengajuan, dan selesai.</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 flex flex-wrap gap-4 items-end relative z-10">
+                    <div id="filterOscContainer" class="hidden relative min-w-[150px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih OSC</label>
+                        <button type="button" onclick="toggleMultiSelect('sumOscDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih OSC --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="sumOscDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                    <div id="filterDepotContainer" class="hidden relative min-w-[150px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Depot</label>
+                        <button type="button" onclick="toggleMultiSelect('sumDepotDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih Depot --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="sumDepotDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                    <div class="relative min-w-[200px]">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pilih Campaign</label>
+                        <button type="button" onclick="toggleMultiSelect('sumCampDropdown')" class="w-full text-left px-3 py-2 border border-gray-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                            <span class="truncate">-- Pilih Campaign --</span> <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div id="sumCampDropdown" class="multiselect-dropdown p-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="summaryLoader" class="text-center py-10 hidden">
+                    <div class="loader mx-auto mb-3 border-t-blue-600 border-gray-200"></div>
+                    <p class="text-gray-500">Mengkalkulasi statistik...</p>
+                </div>
+
+                <div id="summaryContent" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chart Section -->
+                    <div class="lg:col-span-1 bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center">
+                        <h3 class="font-bold text-gray-700 mb-4 text-center w-full border-b pb-2">Status Realisasi Klaim vs Total Reward</h3>
+                        <div class="relative w-full max-w-[250px] aspect-square">
+                            <canvas id="summaryPieChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Table Section -->
+                    <div class="lg:col-span-2 overflow-x-auto table-container">
+                        <table class="w-full text-left border-collapse border rounded-lg bg-white whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-100 border-b">
+                                    <th class="p-3 text-xs font-bold text-gray-600 uppercase">Kd Campaign</th>
+                                    <th class="p-3 text-xs font-bold text-gray-600 uppercase">Nama Campaign</th>
+                                    <th class="p-3 text-xs font-bold text-blue-700 uppercase text-right">Total Reward</th>
+                                    <th class="p-3 text-xs font-bold text-orange-600 uppercase text-right">Diajukan (Not Yet)</th>
+                                    <th class="p-3 text-xs font-bold text-green-600 uppercase text-right">Selesai (Done)</th>
+                                    <th class="p-3 text-xs font-bold text-purple-700 uppercase text-center">% Selesai</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody" class="divide-y divide-gray-200">
+                                <!-- Diisi via JS -->
+                            </tbody>
+                            <tfoot id="summaryTableFoot" class="bg-gray-50 border-t-2 border-gray-300 font-bold">
+                                <!-- Total Baris via JS -->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Workspace -->
+
+        <!-- SECTION 4: KELOLA AKSES (RBAC) -->
+        <div id="manageAccessSection" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-users-cog text-blue-600 mr-2"></i>Kelola Akses Pengguna</h2>
+                        <p class="text-sm text-gray-500 mt-1">Daftar pengguna pada depot yang menjadi otoritas Anda.</p>
+                    </div>
+                    <button onclick="fetchManageableData()" class="bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-bold py-2 px-4 rounded shadow-sm flex items-center transition">
+                        <i class="fas fa-sync-alt mr-2"></i> Refresh
+                    </button>
+                </div>
+
+                <div id="manageLoader" class="text-center py-10 hidden">
+                    <div class="loader mx-auto mb-3 border-t-blue-600 border-gray-200"></div>
+                    <p class="text-gray-500">Memuat data pengguna...</p>
+                </div>
+
+                <div class="overflow-x-auto table-container">
+                    <table class="w-full text-left border-collapse border rounded-lg bg-white" id="manageTable">
+                        <thead>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="p-3 text-sm font-semibold text-gray-600">User ID & Email</th>
+                                <th class="p-3 text-sm font-semibold text-gray-600">Depot</th>
+                                <th class="p-3 text-sm font-semibold text-gray-600">Role</th>
+                                <th class="p-3 text-sm font-semibold text-gray-600">Aktivasi</th>
+                                <th class="p-3 text-sm font-semibold text-gray-600 text-center">Req PIN</th>
+                                <th class="p-3 text-sm font-semibold text-gray-600 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manageTableBody" class="divide-y divide-gray-100">
+                            <!-- Diisi via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: TAMBAH AKUN (RBAC) -->
+        <div id="addAccountSection" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 max-w-2xl mx-auto relative">
+                <div class="mb-6 border-b pb-4">
+                    <h2 class="text-2xl font-bold text-gray-800" id="addAccountTitle"><i class="fas fa-user-plus text-green-600 mr-2"></i>Buat Akun Pengguna</h2>
+                    <p class="text-sm text-gray-500 mt-1" id="addAccountDesc">Tambahkan anggota tim atau admin depot baru.</p>
+                </div>
+
+                <form id="addAccountForm" onsubmit="event.preventDefault(); submitAddAccount();">
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Lengkap (Identitas)</label>
+                        <input type="text" id="addName" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none" placeholder="Masukkan nama pengguna">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">User ID</label>
+                            <input type="text" id="addUserId" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">PIN (Password)</label>
+                            <input type="text" id="addPin" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email</label>
+                        <input type="email" id="addEmail" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Role Akses</label>
+                            <select id="addRole" onchange="handleAddRoleChange()" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 bg-white">
+                                <!-- Options populated by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Penempatan Depot Utama</label>
+                            <select id="addDepotName" required class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 bg-white disabled:bg-gray-100 disabled:text-gray-600">
+                                <option value="" disabled selected>Memuat Depot...</option>
+                                <!-- Diisi Via JS -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- DEPARTEMEN NAME FOR NON-OSC -->
+                    <div id="addDeptContainer" class="hidden mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Departemen (Non-OSC)</label>
+                        <select id="addDeptName" onchange="toggleDeptManual()" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 bg-white">
+                            <option value="Finance">Finance</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Management">Management</option>
+                            <option value="Lainnya">Lainnya...</option>
+                        </select>
+                        <input type="text" id="addDeptManual" class="hidden w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500" placeholder="Tulis nama departemen">
+                    </div>
+
+                    <!-- HIRARKI FIELDS (SUPERVISOR ONLY) -->
+                    <div id="assignOscContainer" class="hidden mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <label class="block text-xs font-bold text-blue-700 uppercase mb-1"><i class="fas fa-link mr-1"></i> Assign ke OSC (Wajib)</label>
+                        <p class="text-[10px] text-blue-600 mb-2">Tentukan user OSC mana yang memegang admin ini.</p>
+                        <div class="relative">
+                            <button type="button" onclick="toggleMultiSelect('addAssignOscDrop')" class="w-full text-left px-3 py-2 border border-blue-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                                <span class="truncate">-- Pilih OSC --</span> <i class="fas fa-chevron-down text-blue-400"></i>
+                            </button>
+                            <div id="addAssignOscDrop" class="multiselect-dropdown p-2 text-sm"></div>
+                        </div>
+                    </div>
+
+                    <!-- MULTI-SELECT ASSIGN ADMIN / DEPOT -->
+                    <div id="assignAdminContainer" class="hidden mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <label class="block text-xs font-bold text-purple-700 uppercase mb-1"><i class="fas fa-network-wired mr-1"></i> Assign Akses Admin / Depot (Wajib)</label>
+                        <p class="text-[10px] text-purple-600 mb-2">Pilih depot/admin mana saja yang akan dikelola (Bisa lebih dari 1).</p>
+                        <div class="relative">
+                            <button type="button" onclick="toggleMultiSelect('addAssignAdminDrop')" class="w-full text-left px-3 py-2 border border-purple-300 rounded bg-white text-sm flex justify-between items-center focus:ring-2 focus:ring-purple-500">
+                                <span class="truncate">-- Pilih Depot Assign --</span> <i class="fas fa-chevron-down text-purple-400"></i>
+                            </button>
+                            <div id="addAssignAdminDrop" class="multiselect-dropdown p-2 text-sm"></div>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <button type="submit" id="btnAddAccountSubmit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center transition shadow-sm">
+                            <span id="btnAddAccountText">Buat Akun Sekarang</span>
+                            <div id="addAccountLoader" class="loader hidden ml-2 border-t-white w-5 h-5 border-2"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div> <!-- End Main Container -->
+
+    <!-- MODAL REQUEST GANTI PIN -->
+    <div id="requestPinModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[70] p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col">
+            <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800 text-lg">Request Ganti PIN</h3>
+                <button onclick="closeRequestPinModal()" class="text-gray-400 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-5">
+                <p class="text-sm text-gray-500 mb-4">Pengajuan pergantian PIN baru akan berstatus <strong>Pending</strong> sebelum disetujui oleh OSC/Supervisor Anda.</p>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">PIN Baru Anda</label>
+                    <input type="password" id="reqNewPin" class="w-full px-3 py-2 border rounded focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" placeholder="Masukkan PIN baru">
+                </div>
+            </div>
+            <div class="p-4 border-t bg-white flex justify-end gap-2">
+                <button onclick="closeRequestPinModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition duration-200">Batal</button>
+                <button onclick="submitRequestPin()" id="btnSubmitReqPin" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition duration-200 flex items-center">
+                    <span id="txtSubmitReqPin">Ajukan PIN</span>
+                    <div id="loadSubmitReqPin" class="loader hidden ml-2 border-t-white w-4 h-4 border-2"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL HISTORY (UNTUK TOKO & CAMPAIGN) -->
+    <div id="detailHistoryModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[60] p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-gray-800 text-lg" id="detailModalTitle">Detail History</h3>
+                    <p class="text-xs text-gray-500 mt-1" id="detailModalSubtitle">-</p>
+                </div>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-4 overflow-auto flex-1 bg-gray-50">
+                <div class="table-container">
+                    <table class="w-full text-left border-collapse border rounded-lg bg-white whitespace-nowrap shadow-sm">
+                        <thead>
+                            <tr class="bg-gray-200 border-b">
+                                <th class="p-3 text-xs font-bold text-gray-700 uppercase" id="detailCol1">Item</th>
+                                <th class="p-3 text-xs font-bold text-orange-600 uppercase text-right">Diajukan (Not Yet)</th>
+                                <th class="p-3 text-xs font-bold text-green-600 uppercase text-right">Selesai (Done)</th>
+                                <th class="p-3 text-xs font-bold text-blue-700 uppercase text-right">Total Klaim</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailModalBody" class="divide-y divide-gray-200">
+                            <!-- Diisi via JS -->
+                        </tbody>
+                        <tfoot id="detailModalFoot" class="bg-gray-100 border-t-2 border-gray-300 font-bold">
+                            <!-- Diisi via JS -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="p-4 border-t bg-white flex justify-end">
+                <button onclick="closeDetailModal()" class="px-6 py-2 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-lg transition duration-200">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUMMARY UPLOAD-->
+    <div id="summaryModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
+            <div class="bg-green-50 px-6 py-6 border-b border-green-100 text-center" id="modHeaderBg">
+                <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-4" id="modIconBg">
+                    <i class="fas fa-check text-green-600 text-2xl" id="modIcon"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900" id="modTitle">Upload Berhasil!</h3>
+                <p class="text-sm text-gray-500 mt-1" id="modSubtitle">Data klaim telah masuk ke Spreadsheet.</p>
+            </div>
+            
+            <div class="px-6 py-5">
+                <div class="mb-4 text-center">
+                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">No Upload Terakhir</p>
+                    <p class="text-2xl font-black text-red-600 tracking-wide mt-1" id="modNoUpload">-</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-sm border">
+                    <p class="mb-2 flex justify-between"><span class="text-gray-500">Berhasil Masuk:</span> <span class="font-bold text-green-600 text-right" id="modTotalSuccess">-</span></p>
+                    <p class="mb-2 flex justify-between"><span class="text-gray-500">Ditolak DataClaim:</span> <span class="font-bold text-red-600 text-right" id="modTotalDuplicate">-</span></p>
+                    <div class="border-t border-gray-200 my-2"></div>
+                    <p class="flex justify-between items-center"><span class="text-gray-600 font-semibold">Total Frekuensi Hari Ini:</span> <span class="font-bold text-blue-600 text-base" id="modTotal">-</span></p>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end">
+                <button onclick="closeSummaryModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200">
+                    Tutup & Kembali
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT AKSES (RBAC) -->
+    <div id="editAccessModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800">Edit Akses</h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-700"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-5 overflow-auto flex-1">
+                <input type="hidden" id="editUserId">
+                <p class="text-sm text-gray-500 mb-4">Ubah otorisasi untuk <span id="editUserDisplay" class="font-bold text-gray-800"></span></p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Status Aktivasi</label>
+                        <select id="editActivation" class="w-full px-3 py-2 border rounded focus:border-blue-500 bg-white">
+                            <option value="pending">Pending</option>
+                            <option value="ok">Aktif (OK)</option>
+                            <option value="blocked">Blokir</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Role Utama</label>
+                        <select id="editRole" class="w-full px-3 py-2 border rounded focus:border-blue-500 bg-gray-100" disabled>
+                            <!-- View Only to prevent logic breaks, role changes should be via Add Account overrides or backend -->
+                            <option value="admin">Admin</option>
+                            <option value="osc">OSC</option>
+                            <option value="non-osc">Non-OSC</option>
+                            <option value="supervisor">Supervisor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Manual Upload</label>
+                            <select id="editManual" class="w-full px-3 py-2 border rounded focus:border-blue-500 bg-white">
+                                <option value="no">Tidak (No)</option>
+                                <option value="yes">Ya (Yes)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Mass Upload</label>
+                            <select id="editMass" class="w-full px-3 py-2 border rounded focus:border-blue-500 bg-white">
+                                <option value="no">Tidak (No)</option>
+                                <option value="yes">Ya (Yes)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Khusus Supervisor merubah Assign -->
+                    <div id="editSpvSection" class="hidden border-t border-gray-200 pt-4 mt-2">
+                        <h4 class="text-xs font-bold text-blue-700 uppercase mb-2">Otorisasi Supervisor</h4>
+                        
+                        <div id="editAssignOscContainer" class="hidden mb-3">
+                            <label class="block text-[10px] font-bold text-gray-600 mb-1">Assign ke OSC (Untuk Admin)</label>
+                            <div class="relative">
+                                <button type="button" onclick="toggleMultiSelect('editAssignOscDrop')" class="w-full text-left px-3 py-1.5 border border-blue-300 rounded bg-white text-xs flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                                    <span class="truncate">-- Pilih OSC --</span> <i class="fas fa-chevron-down text-blue-400"></i>
+                                </button>
+                                <div id="editAssignOscDrop" class="multiselect-dropdown p-2 text-xs"></div>
+                            </div>
+                        </div>
+
+                        <div id="editAssignDepotContainer" class="hidden mb-3">
+                            <label class="block text-[10px] font-bold text-gray-600 mb-1">Batas Akses Depot (Untuk OSC/Non-OSC)</label>
+                            <div class="relative">
+                                <button type="button" onclick="toggleMultiSelect('editAssignDepotDrop')" class="w-full text-left px-3 py-1.5 border border-blue-300 rounded bg-white text-xs flex justify-between items-center focus:ring-2 focus:ring-blue-500">
+                                    <span class="truncate">-- Pilih Depot Assign --</span> <i class="fas fa-chevron-down text-blue-400"></i>
+                                </button>
+                                <div id="editAssignDepotDrop" class="multiselect-dropdown p-2 text-xs"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="approvePinContainer" class="hidden mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                        <label class="flex items-center space-x-2 text-sm text-gray-800 cursor-pointer font-bold">
+                            <input type="checkbox" id="editApprovePin" class="rounded text-orange-600 focus:ring-orange-500 w-4 h-4">
+                            <span>Setujui Request Ganti PIN</span>
+                        </label>
+                        <p class="text-[10px] text-orange-600 mt-1 ml-6">Centang kotak ini untuk mengaktifkan PIN baru pengguna.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-gray-50 border-t flex justify-end space-x-2">
+                <button onclick="closeEditModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition duration-200">Batal</button>
+                <button onclick="saveUserAccess()" id="btnSaveAccess" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition duration-200 flex items-center">
+                    <span id="btnSaveAccessText">Simpan</span>
+                    <div id="saveAccessLoader" class="loader hidden ml-2 border-t-white w-4 h-4 border-2"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifikasi Bawah -->
+    <div id="notification" class="hidden fixed bottom-5 right-5 px-6 py-4 rounded shadow-lg text-white font-bold z-50 bg-red-500"></div>
+
+    <script>
+        // ==============================================================
+        // SANGAT PENTING: GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA
+        // ==============================================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydUriHtb_gkNgARdAj5sk0gdYGQz-do6qa1oC9riUsefeWWEHLy3uRs96NfjfierjOfQ/exec"; 
+        // ==============================================================
+
+        let currentUserData = null; 
+        let globalCampaigns = []; 
+        let globalCustomers = []; 
+        let globalDocuments = []; 
+
+        let currentManageableUsers = [];
+        let globalAvailableDepots = []; 
+        
+        let globalHistoryData = []; 
+        let globalCompileData = []; 
+        let summaryChartInstance = null;
+
+        // Tutup dropdown saat klik di luar
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                var dropdowns = document.getElementsByClassName("multiselect-dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+
+        // --- ACTIVITY LOGGING UTILITY ---
+        function logActivity(actionDetail) {
+            if (!currentUserData) return;
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ 
+                    action: 'logActivity', 
+                    userId: currentUserData.userId,
+                    role: currentUserData.role,
+                    depotCode: currentUserData.kodeDepot || "0",
+                    detail: actionDetail,
+                    timestamp: new Date().toISOString()
+                })
+            }).catch(e => console.error("Logging failed", e));
+        }
+
+        // --- NAVIGATION & UI UTILITIES ---
+        function toggleMultiSelect(id) {
+            document.getElementById(id).classList.toggle("show");
+        }
+
+        function checkMultiSelect(containerId) {
+            const container = document.getElementById(containerId);
+            if(!container) return "";
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            let vals = [];
+            checkboxes.forEach(cb => {
+                if(cb.value !== 'ALL') vals.push(cb.value);
+            });
+            return vals.join(', ');
+        }
+
+        function getMultiSelectLabel(containerId, isOsc = false) {
+            const container = document.getElementById(containerId);
+            if(!container) return "";
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            if(checkboxes.length === 0) return isOsc ? "-- Pilih OSC --" : "-- Pilih Depot Assign --";
+            let labels = [];
+            checkboxes.forEach(cb => {
+                if(cb.value !== 'ALL') labels.push(cb.nextElementSibling.innerText);
+            });
+            return labels.length > 2 ? labels.length + " Terpilih" : labels.join(', ');
+        }
+
+        function updateMultiSelectLabel(containerId, btnSpan) {
+            const isOsc = containerId.includes('Osc');
+            btnSpan.innerText = getMultiSelectLabel(containerId, isOsc);
+        }
+
+        function toggleAllMultiselect(sourceCb, containerId) {
+            const container = document.getElementById(containerId);
+            const checkboxes = container.querySelectorAll('.single-cb');
+            checkboxes.forEach(cb => {
+                cb.checked = sourceCb.checked;
+            });
+            updateMultiSelectLabel(containerId, sourceCb.closest('.relative').querySelector('button span'));
+        }
+
+        function buildMultiselectHTML(options, isAllOption = false, containerId) {
+            let html = '';
+            if (isAllOption) {
+                html += `
+                    <label class="flex items-center space-x-2 p-2 hover:bg-gray-100 border-b cursor-pointer">
+                        <input type="checkbox" value="ALL" onchange="toggleAllMultiselect(this, '${containerId}')" class="rounded w-4 h-4">
+                        <span class="font-bold text-gray-800">Pilih Semua</span>
+                    </label>
+                `;
+            }
+            options.forEach(opt => {
+                html += `
+                    <label class="flex items-center space-x-2 p-2 hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" value="${opt.value}" class="single-cb rounded w-4 h-4 text-blue-600 focus:ring-blue-500" onchange="updateMultiSelectLabel('${containerId}', this.closest('.relative').querySelector('button span'))">
+                        <span class="text-gray-700">${opt.label}</span>
+                    </label>
+                `;
+            });
+            return html;
+        }
+
+        function goToHome() {
+            if (!currentUserData) return;
+            goToDashboard();
+        }
+
+        function openModule(moduleName) {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('navBackBtn').classList.remove('hidden');
+            
+            document.getElementById('workspaceSection').classList.add('hidden');
+            document.getElementById('manageAccessSection').classList.add('hidden');
+            document.getElementById('addAccountSection').classList.add('hidden');
+
+            if(moduleName === 'claim') {
+                document.getElementById('workspaceSection').classList.remove('hidden');
+            } else if (moduleName === 'manageAccess') {
+                document.getElementById('manageAccessSection').classList.remove('hidden');
+                fetchManageableData();
+            } else if (moduleName === 'addAccount') {
+                document.getElementById('addAccountSection').classList.remove('hidden');
+                loadAddAccountForm();
+            }
+        }
+
+        function goToDashboard() {
+            document.getElementById('workspaceSection').classList.add('hidden');
+            document.getElementById('manageAccessSection').classList.add('hidden');
+            document.getElementById('addAccountSection').classList.add('hidden');
+            
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('navBackBtn').classList.add('hidden');
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tabSingle').classList.toggle('hidden', tab !== 'single');
+            document.getElementById('tabMass').classList.toggle('hidden', tab !== 'mass');
+            document.getElementById('tabHistory').classList.toggle('hidden', tab !== 'history');
+            document.getElementById('tabSummary').classList.toggle('hidden', tab !== 'summary');
+            
+            document.getElementById('tabBtnSingle').className = tab === 'single' ? "py-3 px-6 font-bold border-b-4 border-red-600 text-red-600 transition-colors shrink-0" : "py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0";
+            document.getElementById('tabBtnMass').className = tab === 'mass' ? "py-3 px-6 font-bold border-b-4 border-red-600 text-red-600 transition-colors shrink-0" : "py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0";
+            document.getElementById('tabBtnHistory').className = tab === 'history' ? "py-3 px-6 font-bold border-b-4 border-red-600 text-red-600 transition-colors shrink-0" : "py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0";
+            document.getElementById('tabBtnSummary').className = tab === 'summary' ? "py-3 px-6 font-bold border-b-4 border-red-600 text-red-600 transition-colors shrink-0" : "py-3 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-700 transition-colors shrink-0";
+        }
+
+        function showNotification(message, type="error") {
+            const notif = document.getElementById('notification');
+            notif.innerText = message;
+            notif.className = "fixed bottom-5 right-5 px-6 py-4 rounded shadow-lg text-white font-bold z-50 transition-all duration-300";
+            if(type === 'success') notif.classList.add('bg-green-500');
+            else if(type === 'warning') notif.classList.add('bg-orange-500');
+            else notif.classList.add('bg-red-500');
+            
+            notif.style.display = 'block';
+            setTimeout(() => { notif.style.display = 'none'; }, 6000);
+        }
+
+        function closeSummaryModal() { document.getElementById('summaryModal').classList.add('hidden'); }
+
+        function showSummaryModal(summaryData, isMass = false) {
+            document.getElementById('modNoUpload').innerText = summaryData.noUpload || "-";
+            
+            let successC = summaryData.successCount !== undefined ? summaryData.successCount : 0;
+            let duplicateC = summaryData.duplicateCount !== undefined ? summaryData.duplicateCount : 0;
+            
+            document.getElementById('modTotalSuccess').innerText = successC + " Data";
+            document.getElementById('modTotalDuplicate').innerText = duplicateC + " Ditolak";
+            document.getElementById('modTotal').innerText = (summaryData.totalHariIni || 1) + "x Upload";
+
+            const hdBg = document.getElementById('modHeaderBg');
+            const icBg = document.getElementById('modIconBg');
+            const ic = document.getElementById('modIcon');
+            const title = document.getElementById('modTitle');
+            const sub = document.getElementById('modSubtitle');
+
+            if(successC > 0) {
+                hdBg.className = "bg-green-50 px-6 py-6 border-b border-green-100 text-center";
+                icBg.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-4";
+                ic.className = "fas fa-check text-green-600 text-2xl";
+                title.innerText = isMass ? "Upload Batch Selesai!" : "Upload Berhasil!";
+                sub.innerText = isMass ? "Proses kirim data massal berhasil ditangani server." : "Data klaim telah masuk ke Spreadsheet.";
+            } else {
+                hdBg.className = "bg-red-50 px-6 py-6 border-b border-red-100 text-center";
+                icBg.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4";
+                ic.className = "fas fa-times text-red-600 text-2xl";
+                title.innerText = "Upload Ditolak Server!";
+                sub.innerText = "Data tidak tersimpan. Sistem menemukan duplikasi di DataClaim.";
+            }
+            document.getElementById('summaryModal').classList.remove('hidden');
+        }
+
+        function formatCurrencyValue(valueStr) {
+            if (!valueStr) return "";
+            let value = String(valueStr).replace(/\D/g, '');
+            return value !== '' ? parseInt(value, 10).toLocaleString('en-US') : '';
+        }
+
+        // --- REQUEST PIN LOGIC ---
+        function openRequestPinModal() {
+            document.getElementById('reqNewPin').value = '';
+            document.getElementById('requestPinModal').classList.remove('hidden');
+        }
+
+        function closeRequestPinModal() {
+            document.getElementById('requestPinModal').classList.add('hidden');
+        }
+
+        async function submitRequestPin() {
+            const newPin = document.getElementById('reqNewPin').value.trim();
+            if (!newPin) {
+                showNotification("Harap masukkan PIN baru Anda.", "warning");
+                return;
+            }
+
+            document.getElementById('txtSubmitReqPin').innerText = "Memproses...";
+            document.getElementById('loadSubmitReqPin').classList.remove('hidden');
+            document.getElementById('btnSubmitReqPin').disabled = true;
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: 'requestPinChange', 
+                        userId: currentUserData.userId, 
+                        newPin: newPin 
+                    })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showNotification("Permintaan ganti PIN berhasil dikirim (Status Pending).", "success");
+                    logActivity("Mengajukan Request Ganti PIN");
+                    closeRequestPinModal();
+                } else {
+                    showNotification(result.message || "Gagal mengajukan ganti PIN.", "error");
+                }
+            } catch (error) {
+                showNotification("Terjadi kesalahan jaringan/timeout.", "error");
+            } finally {
+                document.getElementById('txtSubmitReqPin').innerText = "Ajukan PIN";
+                document.getElementById('loadSubmitReqPin').classList.add('hidden');
+                document.getElementById('btnSubmitReqPin').disabled = false;
+            }
+        }
+
+
+        // --- LOGIN & AUTH LOGIC ---
+        function handleLoginEnter(e) {
+            if (e.key === 'Enter') processLogin();
+        }
+
+        async function processLogin() {
+            const userid = document.getElementById('userid').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            
+            if(!userid || !pin) { errorDiv.innerText = "Isi User ID dan PIN."; errorDiv.classList.remove('hidden'); return; }
+
+            errorDiv.classList.add('hidden');
+            document.getElementById('btnLoginText').innerText = "Memeriksa Akun..."; 
+            document.getElementById('loginLoader').classList.remove('hidden');
+            document.getElementById('btnLogin').disabled = true;
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                    body: JSON.stringify({ action: 'login', userid: userid, pin: pin })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    currentUserData = result.data;
+                    globalCampaigns = result.campaigns || [];
+                    globalCustomers = result.customers || [];
+                    globalDocuments = result.documents || []; 
+                    
+                    document.getElementById('loginSection').classList.add('hidden');
+                    
+                    // APPLY RBAC LOGIC ON UI
+                    applyRoleBasedUI(currentUserData);
+
+                    document.getElementById('dashboardSection').classList.remove('hidden');
+                    document.getElementById('userInfo').classList.remove('hidden');
+                    
+                    document.getElementById('displayUser').innerText = currentUserData.userId;
+                    document.getElementById('displayRole').innerText = currentUserData.role; 
+                    document.getElementById('depot').value = currentUserData.depot;
+
+                    let sysRole = currentUserData.role.toLowerCase();
+                    if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') sysRole = 'non-osc';
+
+                    if (sysRole === 'admin') {
+                        document.getElementById('displayDepot').innerText = `${currentUserData.depot} - ${currentUserData.kodeDepot || '000'}`;
+                    } else {
+                        document.getElementById('displayDepot').innerText = `Head Office - 0`;
+                    }
+
+                    logActivity("User Login Berhasil");
+
+                } else {
+                    errorDiv.innerText = result.message || "Kredensial salah."; errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.innerText = "Terjadi kesalahan jaringan."; errorDiv.classList.remove('hidden');
+            } finally {
+                document.getElementById('btnLoginText').innerText = "Masuk ke Portal";
+                document.getElementById('loginLoader').classList.add('hidden');
+                document.getElementById('btnLogin').disabled = false;
+            }
+        }
+
+        function logout() {
+            logActivity("User Logout");
+            setTimeout(() => location.reload(), 500); 
+        }
+
+        // RBAC: Adjust UI visibility based on permissions
+        function applyRoleBasedUI(user) {
+            let sysRole = user.role.toLowerCase();
+            
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') sysRole = 'non-osc';
+            
+            if (sysRole === 'osc' || sysRole === 'supervisor') {
+                document.getElementById('menuKelolaAkses').classList.remove('hidden');
+            } else {
+                document.getElementById('menuKelolaAkses').classList.add('hidden');
+            }
+
+            const menuTambahAkun = document.getElementById('menuTambahAkun');
+            const menuTambahTitle = document.getElementById('menuTambahAkunTitle');
+            const menuTambahDesc = document.getElementById('menuTambahAkunDesc');
+            
+            menuTambahAkun.classList.remove('hidden');
+            
+            if (sysRole === 'admin') {
+                menuTambahTitle.innerText = "Request Akun Admin";
+                menuTambahDesc.innerText = "Buat permintaan akun admin baru untuk depot ini.";
+            } else if (sysRole === 'osc' || sysRole === 'non-osc') {
+                menuTambahTitle.innerText = "Kelola & Request Akun";
+                menuTambahDesc.innerText = "Buat akun Admin atau request akun berjenjang.";
+            } else {
+                menuTambahTitle.innerText = "Tambahkan Akun Baru";
+                menuTambahDesc.innerText = "Buat dan *assign* otorisasi akun baru.";
+            }
+
+            if (user.aksesManual === 'no') {
+                document.getElementById('alertNoManual').classList.remove('hidden');
+                document.getElementById('btnSubmitSingle').disabled = true;
+                document.getElementById('btnSubmitSingle').classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+            if (user.aksesMass === 'no') {
+                document.getElementById('alertNoMass').classList.remove('hidden');
+                document.getElementById('excelFileInput').disabled = true;
+                document.getElementById('excelFileInput').classList.add('cursor-not-allowed', 'opacity-50');
+            }
+
+            // Atur dropdown filter summary & history sesuai role
+            if (sysRole === 'supervisor') {
+                document.getElementById('filterOscContainer').classList.remove('hidden');
+                document.getElementById('filterDepotContainer').classList.remove('hidden');
+                document.getElementById('histFilterOscContainer').classList.remove('hidden');
+                document.getElementById('histFilterDepotContainer').classList.remove('hidden');
+            } else if (sysRole === 'osc') {
+                document.getElementById('filterDepotContainer').classList.remove('hidden');
+                document.getElementById('histFilterDepotContainer').classList.remove('hidden');
+            }
+        }
+
+
+        // --- SINGLE UPLOAD LOGIC ---
+        function handleNoDocInput() {
+            let val = document.getElementById('noDoc').value.trim();
+            let statusSpan = document.getElementById('docStatus');
+            
+            if(!val) {
+                statusSpan.innerHTML = '<span class="text-blue-600">(Auto Fill)</span>';
+                return;
+            }
+
+            let foundDoc = globalDocuments.find(d => d.noDoc && d.noDoc.trim().toUpperCase() === val.toUpperCase());
+            if(foundDoc) {
+                statusSpan.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> Terdaftar di Source DB</span>';
+                document.getElementById('custCode').value = foundDoc.custCode;
+                document.getElementById('netValue').value = formatCurrencyValue(foundDoc.netValue);
+                document.getElementById('vols').value = foundDoc.vols;
+                document.getElementById('cashback').value = formatCurrencyValue(foundDoc.cashback);
+                searchCustomer(foundDoc.custCode, foundDoc.custName);
+            } else {
+                if(val.length > 8) {
+                    statusSpan.innerHTML = '<span class="text-orange-500"><i class="fas fa-info-circle"></i> Tidak ada di Source DB</span>';
+                }
+                document.getElementById('custCode').value = ""; document.getElementById('netValue').value = "";
+                document.getElementById('vols').value = ""; document.getElementById('cashback').value = "";
+                document.getElementById('custName').value = "";
+            }
+
+            let parts = val.split('/');
+            let codePart = parts.find(p => p.length === 4 && /^\d+$/.test(p));
+            if(codePart) {
+                let fullCode = codePart.substring(0, 2) + "20" + codePart.substring(2, 4);   
+                document.getElementById('codeCampaign').value = fullCode;
+                searchCampaign(fullCode); 
+            } else {
+                document.getElementById('codeCampaign').value = ""; searchCampaign("");
+            }
+        }
+
+        function searchCampaign(code) {
+            let found = globalCampaigns.find(c => c.code === code);
+            if(found) {
+                document.getElementById('campaign').value = found.name;
+                document.getElementById('periodStart').value = found.start;
+                document.getElementById('campaignEnd').value = found.end;
+                document.getElementById('statusPajak').value = found.statusPajak;
+            } else {
+                document.getElementById('campaign').value = ""; document.getElementById('periodStart').value = "";
+                document.getElementById('campaignEnd').value = ""; document.getElementById('statusPajak').value = "";
+            }
+        }
+
+        function searchCustomer(code, fallbackName = "") {
+            let found = globalCustomers.find(c => c.code === code);
+            document.getElementById('custName').value = found ? found.name : fallbackName;
+        }
+
+        function resetSingleForm() {
+            const currentDepot = document.getElementById('depot').value;
+            document.getElementById('claimForm').reset();
+            document.getElementById('docStatus').innerHTML = '<span class="text-blue-600">(Auto Fill)</span>';
+            document.getElementById('tglClaim').value = defaultDateStr;
+            document.getElementById('depot').value = currentDepot;
+            
+            // Re-apply disabled state based on RBAC
+            if (currentUserData && currentUserData.aksesManual === 'no') {
+                document.getElementById('btnSubmitSingle').disabled = true;
+            } else {
+                document.getElementById('btnSubmitSingle').disabled = false;
+            }
+        }
+
+        // --- MASS UPLOAD LOGIC ---
+        function downloadTemplate() {
+            const ws_data = [
+                ["FORMAT UPLOAD KLAIM MASSAL", "", "", "", "", ""],
+                ["No Document", "NO KTP", "NO NPWP", "Tgl Lunas", "Bulan Tagihan", "Lewat TOP"],
+                ["NPC/CBCN/CONTOH/2225/001", "360123456789", "", "25-12-2025", "12-25", "60"]
+            ];
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Template Upload");
+            XLSX.writeFile(wb, "Template_Klaim_Massal_Simpel.xlsx");
+        }
+
+        document.getElementById('excelFileInput').addEventListener('change', function(e) {
+            let file = e.target.files[0];
+            if(!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let data = new Uint8Array(e.target.result);
+                let workbook = XLSX.read(data, {type: 'array'});
+                let firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                
+                let rows = XLSX.utils.sheet_to_json(firstSheet, {header: 1, raw: false, defval: ""});
+                
+                if(rows.length < 3) {
+                    showNotification("File Excel Kosong atau format salah (Minimal baris ke-3)!", "error");
+                    return;
+                }
+
+                // Ambil header dari baris ke-2 (index 1)
+                let headers = rows[1].map(h => String(h).toLowerCase().trim());
+                let idxDoc = -1, idxKtp = -1, idxNpwp = -1, idxLunas = -1, idxBln = -1, idxDay = -1;
+                
+                headers.forEach((h, i) => {
+                    if(h.includes("no doc")) idxDoc = i;
+                    if(h.includes("ktp")) idxKtp = i;
+                    if(h.includes("npwp")) idxNpwp = i;
+                    if(h.includes("lunas")) idxLunas = i;
+                    if(h.includes("bulan") || h.includes("tagihan")) idxBln = i;
+                    if(h.includes("top") || h.includes("day") || h.includes("lewat")) idxDay = i;
+                });
+
+                if(idxDoc === -1) idxDoc = 0; if(idxKtp === -1) idxKtp = 1;
+                if(idxNpwp === -1) idxNpwp = 2; if(idxLunas === -1) idxLunas = 3;
+                if(idxBln === -1) idxBln = 4; if(idxDay === -1) idxDay = 5;
+
+                massUploadDataValid = [];
+                let localUploadedDocs = []; 
+                let tbody = document.getElementById('massTableBody');
+                tbody.innerHTML = '';
+                
+                let countValid = 0;
+                let countNotInDB = 0;
+
+                // Loop data dimulai dari baris ke-3 (index 2)
+                for(let i=2; i<rows.length; i++) {
+                    let row = rows[i];
+                    let noDocRaw = String(row[idxDoc] || "").trim(); 
+                    if(!noDocRaw) continue; 
+
+                    let noDocUpper = noDocRaw.toUpperCase();
+                    let isDuplicateInFile = localUploadedDocs.includes(noDocUpper);
+                    let foundDb = globalDocuments.find(d => d.noDoc && d.noDoc.trim().toUpperCase() === noDocUpper);
+                    
+                    let statusHtml = "";
+                    let rowClass = "";
+
+                    if(isDuplicateInFile) {
+                        statusHtml = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded text-[10px] font-bold">Duplikat di Excel</span>';
+                        rowClass = "bg-red-50 opacity-60";
+                    } else if (!foundDb) {
+                        statusHtml = '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-[10px] font-bold">Tdk di Source DB</span>';
+                        rowClass = "bg-orange-50 opacity-60";
+                        countNotInDB++;
+                    } else {
+                        statusHtml = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold">Siap di-Cek Server</span>';
+                        rowClass = "hover:bg-gray-50";
+                        countValid++;
+                        localUploadedDocs.push(noDocUpper);
+
+                        let manualKtp = String(row[idxKtp]||"").trim();
+                        let manualNpwp = String(row[idxNpwp]||"").trim();
+                        let manualTglLunas = String(row[idxLunas]||"").trim(); 
+                        let manualDay = String(row[idxDay]||"").trim();
+                        let manualBlnTagihan = String(row[idxBln]||"").trim();
+
+                        massUploadDataValid.push({
+                            tglClaim: defaultDateStr,
+                            noDoc: noDocRaw,
+                            codeCampaign: "",
+                            campaign: "",
+                            custCode: "",
+                            custName: "",
+                            netValue: "",
+                            vols: "",
+                            cashback: "",
+                            periodStart: "",
+                            campaignEnd: "",
+                            noKtp: manualKtp,
+                            noNpwp: manualNpwp,
+                            statusPajak: "",
+                            tglLunas: manualTglLunas,
+                            lewatTop: manualDay,
+                            bulanTagihan: manualBlnTagihan
+                        });
+                    }
+
+                    let identitas = String(row[idxKtp]||"") ? String(row[idxKtp]) : (String(row[idxNpwp]||"") ? String(row[idxNpwp]) : "-");
+                    
+                    tbody.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td class="px-4 py-2 border-b">${statusHtml}</td>
+                            <td class="px-4 py-2 border-b font-medium text-blue-800">${noDocRaw}</td>
+                            <td class="px-4 py-2 border-b text-gray-600">${identitas}</td>
+                            <td class="px-4 py-2 border-b font-medium">${String(row[idxLunas]||"-").trim()}</td>
+                            <td class="px-4 py-2 border-b font-medium">${String(row[idxBln]||"-").trim()}</td>
+                            <td class="px-4 py-2 border-b text-red-600 font-bold">${String(row[idxDay]||"-").trim()}</td>
+                        </tr>
+                    `;
+                }
+
+                document.getElementById('massCount').innerText = `${countValid} Siap Proses, ${countNotInDB} Tidak dikenal`;
+                document.getElementById('massPreviewContainer').classList.remove('hidden');
+                
+                let btnMass = document.getElementById('btnSubmitMass');
+                if(countValid > 0 && currentUserData.aksesMass === 'yes') {
+                    btnMass.disabled = false;
+                    btnMass.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                } else {
+                    btnMass.disabled = true;
+                    btnMass.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    if (currentUserData.aksesMass !== 'yes') {
+                         showNotification("Anda tidak memiliki hak akses Mass Upload.", "warning");
+                    } else {
+                         showNotification("Tidak ada data valid yang bisa dikirim ke server.", "warning");
+                    }
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function resetMassForm() {
+            document.getElementById('excelFileInput').value = "";
+            document.getElementById('massPreviewContainer').classList.add('hidden');
+            massUploadDataValid = [];
+            let btnMass = document.getElementById('btnSubmitMass');
+            btnMass.disabled = true;
+            btnMass.classList.add('bg-gray-400', 'cursor-not-allowed');
+        }
+
+        // --- DASHBOARD: HISTORY & SUMMARY LOGIC ---
+        async function fetchDashboardData() {
+            document.getElementById('historyLoader').classList.remove('hidden');
+            document.getElementById('summaryLoader').classList.remove('hidden');
+            document.getElementById('historyTableBody').innerHTML = '';
+            document.getElementById('summaryTableBody').innerHTML = '';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: 'getDashboardData', 
+                        requesterId: currentUserData.userId, 
+                        requesterRole: currentUserData.role,
+                        managedDepots: currentUserData.managedDepots 
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    globalHistoryData = result.history || [];
+                    globalCompileData = result.compileData || [];
+                    
+                    populateFilters(globalHistoryData, globalCompileData);
+                    
+                    renderHistoryTable();
+                    renderSummary();
+                } else {
+                    showNotification("Gagal memuat data Dashboard.", "warning");
+                }
+            } catch (error) {
+                showNotification("Gagal menghubungkan ke server untuk History/Summary.", "error");
+            } finally {
+                document.getElementById('historyLoader').classList.add('hidden');
+                document.getElementById('summaryLoader').classList.add('hidden');
+            }
+        }
+
+        // MODAL DETAILS FUNCTION
+        function showDetailModal(type, code, name) {
+            const modal = document.getElementById('detailHistoryModal');
+            const title = document.getElementById('detailModalTitle');
+            const subtitle = document.getElementById('detailModalSubtitle');
+            const col1 = document.getElementById('detailCol1');
+            const tbody = document.getElementById('detailModalBody');
+            const tfoot = document.getElementById('detailModalFoot');
+            
+            tbody.innerHTML = '';
+            let aggregatedData = {};
+            let totalNotYet = 0;
+            let totalDone = 0;
+            let totalKlaim = 0;
+
+            if (type === 'toko') {
+                title.innerText = "Detail History Toko";
+                subtitle.innerText = `${code} - ${name}`;
+                col1.innerText = "Campaign";
+                
+                let filtered = globalHistoryData.filter(d => d.kodeToko === code);
+                filtered.forEach(d => {
+                    let key = `${d.codeCampaign} - ${d.campaign}`;
+                    if(!aggregatedData[key]) aggregatedData[key] = { notYet: 0, done: 0 };
+                    
+                    let val = Number(d.totalClaim) || 0;
+                    let st = String(d.status || "").trim().toLowerCase();
+                    if (st === 'done') {
+                        aggregatedData[key].done += val;
+                        totalDone += val;
+                    } else {
+                        aggregatedData[key].notYet += val;
+                        totalNotYet += val;
+                    }
+                    totalKlaim += val;
+                });
+            } else if (type === 'campaign') {
+                title.innerText = "Detail History Campaign";
+                subtitle.innerText = `${code} - ${name}`;
+                col1.innerText = "Toko";
+
+                let filtered = globalHistoryData.filter(d => d.codeCampaign === code);
+                filtered.forEach(d => {
+                    let key = `${d.kodeToko} - ${d.namaToko}`;
+                    if(!aggregatedData[key]) aggregatedData[key] = { notYet: 0, done: 0 };
+                    
+                    let val = Number(d.totalClaim) || 0;
+                    let st = String(d.status || "").trim().toLowerCase();
+                    if (st === 'done') {
+                        aggregatedData[key].done += val;
+                        totalDone += val;
+                    } else {
+                        aggregatedData[key].notYet += val;
+                        totalNotYet += val;
+                    }
+                    totalKlaim += val;
+                });
+            }
+
+            for (let k in aggregatedData) {
+                let s = aggregatedData[k];
+                let rowTotal = s.notYet + s.done;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-blue-50">
+                        <td class="p-3 border-b font-medium text-gray-700">${k}</td>
+                        <td class="p-3 border-b text-right font-semibold text-orange-600">${s.notYet.toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-right font-semibold text-green-600">${s.done.toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-right font-bold text-blue-700">${rowTotal.toLocaleString('id-ID')}</td>
+                    </tr>
+                `;
+            }
+
+            if(Object.keys(aggregatedData).length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Tidak ada data.</td></tr>`;
+            }
+
+            tfoot.innerHTML = `
+                <tr>
+                    <td class="p-3 text-right">TOTAL KESELURUHAN</td>
+                    <td class="p-3 text-right text-orange-700">${totalNotYet.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-right text-green-700">${totalDone.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-right text-blue-800">${totalKlaim.toLocaleString('id-ID')}</td>
+                </tr>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailHistoryModal').classList.add('hidden');
+        }
+
+        function renderHistoryTable() {
+            const selStatus = document.getElementById('histFilterStatus').value;
+            // Multichoice filter evaluation
+            let selOscStr = checkMultiSelect('histOscDropdown');
+            let selDepotStr = checkMultiSelect('histDepotDropdown');
+            let selCampStr = checkMultiSelect('histCampDropdown');
+
+            let selOsc = selOscStr ? selOscStr.split(', ') : [];
+            let selDepot = selDepotStr ? selDepotStr.split(', ') : [];
+            let selCamp = selCampStr ? selCampStr.split(', ') : [];
+
+            let filteredHistory = globalHistoryData.filter(d => {
+                let st = String(d.status || "").trim().toLowerCase();
+                let filterSt = selStatus.toLowerCase();
+
+                let matchStatus = selStatus === 'ALL' || st === filterSt;
+                let matchOsc = selOsc.length === 0 || selOsc.includes(d.osc);
+                let matchDepot = selDepot.length === 0 || selDepot.includes(d.depot);
+                let matchCamp = selCamp.length === 0 || selCamp.includes(`${d.codeCampaign} - ${d.campaign}`);
+                return matchStatus && matchOsc && matchDepot && matchCamp;
+            });
+
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            
+            if (filteredHistory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-500">Tidak ada riwayat klaim tersedia.</td></tr>`;
+                return;
+            }
+
+            filteredHistory.forEach((row) => {
+                let st = String(row.status || "").trim().toLowerCase();
+                let statusBadge = st === 'done' 
+                    ? '<span class="px-2 py-1 bg-green-100 text-green-700 font-bold rounded-full text-[10px]">Done</span>'
+                    : '<span class="px-2 py-1 bg-orange-100 text-orange-700 font-bold rounded-full text-[10px]">Not Yet</span>';
+                
+                let tglProsesDisplay = row.tglProses ? row.tglProses : '-';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 border-b text-blue-700 font-semibold">${row.noDoc}</td>
+                        <td class="p-3 border-b">${row.kodeToko}</td>
+                        <td class="p-3 border-b">
+                            <button onclick="showDetailModal('toko', '${row.kodeToko}', '${row.namaToko}')" class="text-blue-600 hover:text-blue-800 hover:underline font-bold text-left transition">${row.namaToko}</button>
+                        </td>
+                        <td class="p-3 border-b">${row.codeCampaign}</td>
+                        <td class="p-3 border-b">
+                            <button onclick="showDetailModal('campaign', '${row.codeCampaign}', '${row.campaign}')" class="text-blue-600 hover:text-blue-800 hover:underline font-bold text-left transition">${row.campaign}</button>
+                        </td>
+                        <td class="p-3 border-b text-xs text-gray-500">${row.periode}</td>
+                        <td class="p-3 border-b text-right font-bold text-gray-800">${Number(row.totalClaim).toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-center">${statusBadge}</td>
+                        <td class="p-3 border-b text-center font-semibold text-gray-600">${tglProsesDisplay}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function populateFilters(historyData, compileData) {
+            const oscs = new Set();
+            const depots = new Set();
+            const camps = new Set();
+            
+            historyData.forEach(d => {
+                if (d.osc) oscs.add(d.osc);
+                if (d.depot) depots.add(d.depot);
+                if (d.codeCampaign) camps.add(`${d.codeCampaign} - ${d.campaign}`);
+            });
+
+            compileData.forEach(c => {
+                if (c.depotName) depots.add(c.depotName);
+                if (c.codeCampaign) camps.add(`${c.codeCampaign} - ${c.campaign}`);
+            });
+
+            let oscOptions = Array.from(oscs).map(x => ({label: x, value: x}));
+            let depotOptions = Array.from(depots).map(x => ({label: x, value: x}));
+            let campOptions = Array.from(camps).map(x => ({label: x, value: x}));
+
+            // History dropdowns (Multiselect)
+            document.getElementById('histOscDropdown').innerHTML = buildMultiselectHTML(oscOptions, true, 'histOscDropdown');
+            document.getElementById('histDepotDropdown').innerHTML = buildMultiselectHTML(depotOptions, true, 'histDepotDropdown');
+            document.getElementById('histCampDropdown').innerHTML = buildMultiselectHTML(campOptions, true, 'histCampDropdown');
+
+            // Summary dropdowns (Multiselect)
+            document.getElementById('sumOscDropdown').innerHTML = buildMultiselectHTML(oscOptions, true, 'sumOscDropdown');
+            document.getElementById('sumDepotDropdown').innerHTML = buildMultiselectHTML(depotOptions, true, 'sumDepotDropdown');
+            document.getElementById('sumCampDropdown').innerHTML = buildMultiselectHTML(campOptions, true, 'sumCampDropdown');
+        }
+
+        function renderSummary() {
+            let selOscStr = checkMultiSelect('sumOscDropdown');
+            let selDepotStr = checkMultiSelect('sumDepotDropdown');
+            let selCampStr = checkMultiSelect('sumCampDropdown');
+
+            let selOsc = selOscStr ? selOscStr.split(', ') : [];
+            let selDepot = selDepotStr ? selDepotStr.split(', ') : [];
+            let selCamp = selCampStr ? selCampStr.split(', ') : [];
+
+            let summaryByCamp = {};
+            let totalNotYetGlobal = 0;
+            let totalDoneGlobal = 0;
+            let totalRewardGlobal = 0;
+
+            // 1. Ambil "Total Reward" dari Compile Sheet sesuai filter
+            let filteredCompile = globalCompileData.filter(c => {
+                let matchDepot = selDepot.length === 0 || selDepot.includes(c.depotName);
+                let matchCamp = selCamp.length === 0 || selCamp.includes(`${c.codeCampaign} - ${c.campaign}`);
+                return matchDepot && matchCamp;
+            });
+
+            filteredCompile.forEach(c => {
+                let key = `${c.codeCampaign}|${c.campaign}`;
+                if (!summaryByCamp[key]) {
+                    summaryByCamp[key] = { name: c.campaign, code: c.codeCampaign, reward: 0, notYet: 0, done: 0 };
+                }
+                summaryByCamp[key].reward += Number(c.reward) || 0;
+            });
+
+            // 2. Ambil pengajuan & done dari History (DataClaim)
+            let filteredHistory = globalHistoryData.filter(d => {
+                let matchOsc = selOsc.length === 0 || selOsc.includes(d.osc);
+                let matchDepot = selDepot.length === 0 || selDepot.includes(d.depot);
+                let matchCamp = selCamp.length === 0 || selCamp.includes(`${d.codeCampaign} - ${d.campaign}`);
+                return matchOsc && matchDepot && matchCamp;
+            });
+
+            filteredHistory.forEach(d => {
+                let key = `${d.codeCampaign}|${d.campaign}`;
+                if (!summaryByCamp[key]) {
+                    summaryByCamp[key] = { name: d.campaign, code: d.codeCampaign, reward: 0, notYet: 0, done: 0 };
+                }
+                
+                let val = Number(d.totalClaim) || 0;
+                let st = String(d.status || "").trim().toLowerCase();
+                
+                if (st === 'done') {
+                    summaryByCamp[key].done += val;
+                    totalDoneGlobal += val;
+                } else {
+                    summaryByCamp[key].notYet += val;
+                    totalNotYetGlobal += val;
+                }
+            });
+
+            // Update Table
+            const tbody = document.getElementById('summaryTableBody');
+            const tfoot = document.getElementById('summaryTableFoot');
+            tbody.innerHTML = '';
+            
+            for (let k in summaryByCamp) {
+                let s = summaryByCamp[k];
+                totalRewardGlobal += s.reward;
+                
+                let percentSelesai = s.reward > 0 ? ((s.done / s.reward) * 100).toFixed(2) + '%' : '0.00%';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="p-3 border-b text-gray-500">${s.code}</td>
+                        <td class="p-3 border-b font-bold text-gray-700">${s.name}</td>
+                        <td class="p-3 border-b text-right font-bold text-blue-700">${s.reward.toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-right font-semibold text-orange-600">${s.notYet.toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-right font-semibold text-green-600">${s.done.toLocaleString('id-ID')}</td>
+                        <td class="p-3 border-b text-center font-black text-purple-700">${percentSelesai}</td>
+                    </tr>
+                `;
+            }
+
+            if (Object.keys(summaryByCamp).length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Tidak ada data statistik.</td></tr>`;
+            }
+
+            let globalPercent = totalRewardGlobal > 0 ? ((totalDoneGlobal / totalRewardGlobal) * 100).toFixed(2) + '%' : '0.00%';
+
+            tfoot.innerHTML = `
+                <tr>
+                    <td colspan="2" class="p-3 text-right">TOTAL KESELURUHAN</td>
+                    <td class="p-3 text-right text-blue-800">${totalRewardGlobal.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-right text-orange-700">${totalNotYetGlobal.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-right text-green-700">${totalDoneGlobal.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center text-purple-800">${globalPercent}</td>
+                </tr>
+            `;
+
+            // Update Chart (Mewakili 100% Total Reward)
+            updatePieChart(totalRewardGlobal, totalNotYetGlobal, totalDoneGlobal);
+        }
+
+        function updatePieChart(total, notYet, done) {
+            const ctx = document.getElementById('summaryPieChart').getContext('2d');
+            
+            if (summaryChartInstance) {
+                summaryChartInstance.destroy();
+            }
+
+            // Kalkulasi sisa reward yang belum diajukan (Total - Diajukan - Selesai)
+            let sisa = total - (notYet + done);
+            if (sisa < 0) sisa = 0; // Prevent negative values on overclaim
+
+            summaryChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sisa Kuota / Belum Klaim', 'Diajukan (Not Yet)', 'Selesai (Done)'],
+                    datasets: [{
+                        data: [sisa, notYet, done],
+                        backgroundColor: ['#e2e8f0', '#f97316', '#22c55e'], // Gray, Orange, Green
+                        borderWidth: 1,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: {size: 10} } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        let val = context.parsed;
+                                        // Dapatkan total dari dataset chart saat ini
+                                        let datasetTotal = context.chart.data.datasets[context.datasetIndex].data.reduce((a, b) => a + b, 0);
+                                        let percentage = datasetTotal > 0 ? ((val / datasetTotal) * 100).toFixed(2) + '%' : '0%';
+                                        
+                                        label += new Intl.NumberFormat('id-ID').format(val) + ' (' + percentage + ')';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // --- MANAGE ACCESS LOGIC ---
+        async function fetchManageableData() {
+            document.getElementById('manageTableBody').innerHTML = '';
+            document.getElementById('manageLoader').classList.remove('hidden');
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: 'getManageableData', 
+                        requesterId: currentUserData.userId, 
+                        requesterRole: currentUserData.role 
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    currentManageableUsers = result.users || [];
+                    renderManageAccessTable();
+                } else {
+                    showNotification("Gagal memuat data akses.", "error");
+                }
+            } catch (error) {
+                showNotification("Terjadi kesalahan jaringan.", "error");
+            } finally {
+                document.getElementById('manageLoader').classList.add('hidden');
+            }
+        }
+
+        function renderManageAccessTable() {
+            const tbody = document.getElementById('manageTableBody');
+            tbody.innerHTML = '';
+            
+            if (currentManageableUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Tidak ada pengguna yang dapat dikelola.</td></tr>`;
+                return;
+            }
+
+            currentManageableUsers.forEach((u, i) => {
+                let roleColor = 'bg-gray-100 text-gray-700';
+                if (u.role === 'supervisor') roleColor = 'bg-purple-100 text-purple-700';
+                if (u.role === 'osc') roleColor = 'bg-blue-100 text-blue-700';
+
+                let actHtml = u.activation === 'ok' 
+                    ? `<span class="px-2 py-1 text-xs bg-green-50 text-green-600 rounded-full font-bold"><i class="fas fa-check mr-1"></i> Aktif</span>`
+                    : `<span class="px-2 py-1 text-xs bg-orange-50 text-orange-600 rounded-full font-bold"><i class="fas fa-exclamation-circle mr-1"></i> ${u.activation}</span>`;
+
+                let pinBadge = u.pinStatus === 'pending'
+                    ? `<span class="px-2 py-1 bg-orange-100 text-orange-700 text-[10px] font-bold rounded shadow-sm"><i class="fas fa-key mr-1"></i> Req PIN</span>`
+                    : `<span class="text-gray-300">-</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="p-3 border-b">
+                            <div class="font-bold text-gray-800">${u.userId}</div>
+                            <div class="text-xs text-gray-500">${u.email}</div>
+                        </td>
+                        <td class="p-3 border-b text-sm text-gray-700">${u.depotName}</td>
+                        <td class="p-3 border-b">
+                            <span class="px-2 py-1 text-[10px] uppercase font-bold rounded ${roleColor}">${u.role}</span>
+                        </td>
+                        <td class="p-3 border-b">${actHtml}</td>
+                        <td class="p-3 border-b text-center">${pinBadge}</td>
+                        <td class="p-3 border-b text-center">
+                            <button onclick="openEditModal(${i})" class="text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded transition">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openEditModal(index) {
+            const u = currentManageableUsers[index];
+            document.getElementById('editUserId').value = u.userId;
+            document.getElementById('editUserDisplay').innerText = u.userId;
+            
+            document.getElementById('editActivation').value = u.activation || 'pending';
+            document.getElementById('editManual').value = u.manual || 'no';
+            document.getElementById('editMass').value = u.mass || 'no';
+            
+            const roleSelect = document.getElementById('editRole');
+            const spvOpts = document.querySelectorAll('.optRoleSpvOnly');
+            const pinContainer = document.getElementById('approvePinContainer');
+            
+            let sysRole = currentUserData.role.toLowerCase();
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') {
+                sysRole = 'non-osc';
+            }
+            
+            const spvSection = document.getElementById('editSpvSection');
+            const editAssignOscContainer = document.getElementById('editAssignOscContainer');
+            const editAssignDepotContainer = document.getElementById('editAssignDepotContainer');
+
+            // Logic restriction based on current user role
+            if (sysRole === 'supervisor') {
+                spvOpts.forEach(o => o.classList.remove('hidden'));
+                roleSelect.disabled = false;
+                roleSelect.classList.remove('bg-gray-100');
+                
+                // Show Supervisor assignment editing fields
+                spvSection.classList.remove('hidden');
+                
+                if (u.role === 'admin') {
+                    editAssignOscContainer.classList.remove('hidden');
+                    editAssignDepotContainer.classList.add('hidden');
+                    
+                    // Populate OSC multiselect
+                    let oscOpts = currentManageableUsers.filter(x => x.role === 'osc').map(x => ({label: x.userId, value: x.userId}));
+                    document.getElementById('editAssignOscDrop').innerHTML = buildMultiselectHTML(oscOpts, false, 'editAssignOscDrop');
+                    // Precheck current assigned OSC
+                    if (u.assignedOsc) {
+                        let checks = document.getElementById('editAssignOscDrop').querySelectorAll('.single-cb');
+                        checks.forEach(c => {
+                            if (u.assignedOsc.includes(c.value)) c.checked = true;
+                        });
+                        updateMultiSelectLabel('editAssignOscDrop', editAssignOscContainer.querySelector('button span'));
+                    }
+                    
+                } else if (u.role === 'osc' || u.role === 'non-osc') {
+                    editAssignOscContainer.classList.add('hidden');
+                    editAssignDepotContainer.classList.remove('hidden');
+                    
+                    // Populate Depot multiselect
+                    let depOpts = globalAvailableDepots.map(x => ({label: x, value: x}));
+                    document.getElementById('editAssignDepotDrop').innerHTML = buildMultiselectHTML(depOpts, true, 'editAssignDepotDrop');
+                    
+                    // Precheck current assigned Depots
+                    if (u.assignedDepots && u.assignedDepots.length > 0) {
+                        let checks = document.getElementById('editAssignDepotDrop').querySelectorAll('.single-cb');
+                        checks.forEach(c => {
+                            if (u.assignedDepots.includes(c.value)) c.checked = true;
+                        });
+                        updateMultiSelectLabel('editAssignDepotDrop', editAssignDepotContainer.querySelector('button span'));
+                    }
+                }
+                
+            } else {
+                // OSC only can edit manual/mass access for admin
+                spvOpts.forEach(o => o.classList.add('hidden'));
+                roleSelect.disabled = true;
+                roleSelect.classList.add('bg-gray-100');
+                spvSection.classList.add('hidden');
+            }
+            roleSelect.value = u.role || 'admin';
+
+            // Show PIN Approval Checkbox if user has a pending PIN request
+            if (u.pinStatus === 'pending') {
+                pinContainer.classList.remove('hidden');
+                document.getElementById('editApprovePin').checked = false;
+            } else {
+                pinContainer.classList.add('hidden');
+            }
+
+            document.getElementById('editAccessModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editAccessModal').classList.add('hidden');
+        }
+
+        async function saveUserAccess() {
+            const targetId = document.getElementById('editUserId').value;
+            const act = document.getElementById('editActivation').value;
+            const role = document.getElementById('editRole').value;
+            const manual = document.getElementById('editManual').value;
+            const mass = document.getElementById('editMass').value;
+            const approvePin = document.getElementById('editApprovePin').checked;
+
+            let sysRole = currentUserData.role.toLowerCase();
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') {
+                sysRole = 'non-osc';
+            }
+
+            let reqPayload = { 
+                targetUserId: targetId, 
+                role: role, 
+                manual: manual, 
+                mass: mass, 
+                activation: act, 
+                approvePin: approvePin 
+            };
+
+            // Ambil data assignment jika supervisor
+            if (sysRole === 'supervisor') {
+                if (role === 'admin') {
+                    reqPayload.assignOsc = checkMultiSelect('editAssignOscDrop');
+                } else if (role === 'osc' || role === 'non-osc') {
+                    reqPayload.assignDepots = checkMultiSelect('editAssignDepotDrop');
+                }
+            }
+
+            document.getElementById('btnSaveAccessText').innerText = "Menyimpan...";
+            document.getElementById('saveAccessLoader').classList.remove('hidden');
+            document.getElementById('btnSaveAccess').disabled = true;
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: 'updateUserAccess',
+                        requesterRole: sysRole,
+                        data: reqPayload
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showNotification("Akses berhasil diperbarui!", "success");
+                    logActivity(`Update akses user ${targetId} (Role:${role}, Act:${act})`);
+                    closeEditModal();
+                    fetchManageableData(); // Refresh list
+                } else {
+                    showNotification(result.message || "Gagal menyimpan akses.", "error");
+                }
+            } catch (error) {
+                showNotification("Terjadi kesalahan jaringan.", "error");
+            } finally {
+                document.getElementById('btnSaveAccessText').innerText = "Simpan";
+                document.getElementById('saveAccessLoader').classList.add('hidden');
+                document.getElementById('btnSaveAccess').disabled = false;
+            }
+        }
+
+        // --- ADD ACCOUNT LOGIC ---
+        async function loadAddAccountForm() {
+            let sysRole = currentUserData.role.toLowerCase();
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') {
+                sysRole = 'non-osc';
+            }
+            
+            const roleSelect = document.getElementById('addRole');
+            const depotSelect = document.getElementById('addDepotName');
+            
+            roleSelect.innerHTML = '';
+            depotSelect.innerHTML = '<option value="" disabled selected>Memuat Depot...</option>';
+
+            // Setup Options based on Hierarchy
+            if (sysRole === 'supervisor') {
+                roleSelect.innerHTML += '<option value="admin">Admin</option>';
+                roleSelect.innerHTML += '<option value="osc">OSC</option>';
+                roleSelect.innerHTML += '<option value="non-osc">Non-OSC</option>';
+                
+                document.getElementById('addAccountTitle').innerHTML = '<i class="fas fa-user-plus text-green-600 mr-2"></i>Buat Akun Pengguna';
+                document.getElementById('btnAddAccountText').innerText = "Buat Akun Sekarang";
+            } else if (sysRole === 'osc' || sysRole === 'non-osc') {
+                roleSelect.innerHTML += '<option value="admin">Admin</option>';
+                roleSelect.innerHTML += '<option value="osc_req">Request Akun OSC</option>';
+                roleSelect.innerHTML += '<option value="non-osc_req">Request Akun Non-OSC</option>';
+                
+                document.getElementById('addAccountTitle').innerHTML = '<i class="fas fa-user-plus text-green-600 mr-2"></i>Kelola & Request Akun';
+                document.getElementById('btnAddAccountText').innerText = "Simpan Data / Request";
+            } else if (sysRole === 'admin') {
+                roleSelect.innerHTML += '<option value="admin_req">Request Akun Admin</option>';
+                
+                document.getElementById('addAccountTitle').innerHTML = '<i class="fas fa-user-plus text-green-600 mr-2"></i>Request Akun Admin';
+                document.getElementById('btnAddAccountText').innerText = "Kirim Permintaan (Request)";
+            }
+
+            // Setup Depot Options
+            if (sysRole === 'admin') {
+                // Admin locked to their own depot
+                depotSelect.innerHTML = `<option value="${currentUserData.depot}" selected>${currentUserData.depot}</option>`;
+                depotSelect.disabled = true;
+                handleAddRoleChange(); // Trigger UI logic
+            } else {
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'getManageableData', requesterId: currentUserData.userId, requesterRole: currentUserData.role })
+                    });
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        currentManageableUsers = result.users || [];
+                        const opts = (sysRole === 'supervisor') ? result.allDepots : result.managedDepots;
+                        globalAvailableDepots = [...new Set(opts)].filter(d => d.trim() !== '');
+                        
+                        // Populate Multiselect Dropdowns
+                        let oscOpts = currentManageableUsers.filter(u => u.role === 'osc').map(u => ({label: u.userId, value: u.userId}));
+                        document.getElementById('addAssignOscDrop').innerHTML = buildMultiselectHTML(oscOpts, false, 'addAssignOscDrop');
+
+                        let depOpts = globalAvailableDepots.map(d => ({label: d, value: d}));
+                        document.getElementById('addAssignAdminDrop').innerHTML = buildMultiselectHTML(depOpts, true, 'addAssignAdminDrop');
+
+                        handleAddRoleChange(); // Trigger UI logic only after depots are loaded
+                    }
+                } catch(e) {
+                    depotSelect.innerHTML = '<option value="" disabled selected>Gagal memuat depot</option>';
+                }
+            }
+        }
+
+        function handleAddRoleChange() {
+            const roleSelected = document.getElementById('addRole').value;
+            
+            let sysRole = currentUserData.role.toLowerCase();
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') {
+                sysRole = 'non-osc';
+            }
+            
+            const deptContainer = document.getElementById('addDeptContainer');
+            const oscContainer = document.getElementById('assignOscContainer');
+            const assignAdminContainer = document.getElementById('assignAdminContainer');
+            const depotSelect = document.getElementById('addDepotName');
+
+            // Reset visibilitas
+            deptContainer.classList.add('hidden');
+            oscContainer.classList.add('hidden');
+            assignAdminContainer.classList.add('hidden');
+            
+            const isOscOrNonOsc = roleSelected.includes('osc') || roleSelected.includes('non-osc');
+            const isAdmin = roleSelected.includes('admin');
+
+            // --- Atur Penempatan Depot Utama ---
+            if (isOscOrNonOsc) {
+                depotSelect.innerHTML = `<option value="Head Office" selected>Head Office</option>`;
+                depotSelect.disabled = true;
+            } else {
+                // Kalau Admin, kembalikan daftar depot
+                if (sysRole === 'admin') {
+                    depotSelect.innerHTML = `<option value="${currentUserData.depot}" selected>${currentUserData.depot}</option>`;
+                    depotSelect.disabled = true;
+                } else {
+                    depotSelect.disabled = false;
+                    depotSelect.innerHTML = '<option value="" disabled selected>-- Pilih Depot --</option>';
+                    globalAvailableDepots.forEach(d => {
+                        depotSelect.innerHTML += `<option value="${d}">${d}</option>`;
+                    });
+                }
+            }
+
+            // --- Atur Manual Input Departemen (Non-OSC) ---
+            if (roleSelected.includes('non-osc')) {
+                deptContainer.classList.remove('hidden');
+            }
+
+            // --- Atur Kolom Hierarki (Khusus Supervisor jika membuat akun) ---
+            if (sysRole === 'supervisor') {
+                if (isAdmin) {
+                    // Wajib assign ke OSC mana
+                    oscContainer.classList.remove('hidden');
+                } else if (isOscOrNonOsc) {
+                    // Wajib assign untuk depot mana aja
+                    assignAdminContainer.classList.remove('hidden');
+                }
+            }
+
+            // Ganti teks tombol berdasarkan mode (Request vs Create)
+            if (roleSelected.includes('_req')) {
+                document.getElementById('btnAddAccountText').innerText = "Kirim Permintaan (Request)";
+            } else {
+                document.getElementById('btnAddAccountText').innerText = "Buat Akun Sekarang";
+            }
+        }
+
+        function toggleDeptManual() {
+            const val = document.getElementById('addDeptName').value;
+            const manualInput = document.getElementById('addDeptManual');
+            if (val === 'Lainnya') {
+                manualInput.classList.remove('hidden');
+            } else {
+                manualInput.classList.add('hidden');
+                manualInput.value = '';
+            }
+        }
+
+        async function submitAddAccount() {
+            const namaLengkap = document.getElementById('addName').value.trim();
+            const userId = document.getElementById('addUserId').value.trim();
+            const pin = document.getElementById('addPin').value.trim();
+            const email = document.getElementById('addEmail').value.trim();
+            let selectedRole = document.getElementById('addRole').value;
+            
+            // Penempatan Utama
+            const depotName = document.getElementById('addDepotName').value;
+
+            // Extra Data untuk Hirarki & Assignment
+            let assignOsc = "";
+            let assignAdmin = "";
+            let finalRole = selectedRole;
+
+            let sysRole = currentUserData.role.toLowerCase();
+            if (sysRole !== 'admin' && sysRole !== 'osc' && sysRole !== 'supervisor') {
+                sysRole = 'non-osc';
+            }
+
+            // Validasi Nama Lengkap
+            if (!namaLengkap) {
+                showNotification("Nama Lengkap wajib diisi.", "warning");
+                return;
+            }
+
+            // Validasi Penempatan Depot untuk Admin
+            if(selectedRole.includes('admin') && !depotName) {
+                showNotification("Silakan pilih Penempatan Depot terlebih dahulu.", "warning");
+                return;
+            }
+
+            // Dapatkan Departemen untuk Non-OSC
+            if (selectedRole.includes('non-osc')) {
+                const deptDrop = document.getElementById('addDeptName').value;
+                const deptMan = document.getElementById('addDeptManual').value.trim();
+                
+                finalRole = (deptDrop === 'Lainnya') ? deptMan : deptDrop;
+                if (!finalRole) {
+                    showNotification("Nama Departemen wajib diisi untuk akun Non-OSC.", "warning");
+                    return;
+                }
+            }
+
+            // Validasi Supervisor Extra Field
+            if (sysRole === 'supervisor') {
+                if (selectedRole === 'admin') {
+                    assignOsc = checkMultiSelect('addAssignOscDrop');
+                    if (!assignOsc) {
+                        showNotification("Kolom 'Assign ke OSC' wajib dipilih saat membuat Admin.", "warning");
+                        return;
+                    }
+                } else if (selectedRole === 'osc' || selectedRole === 'non-osc') {
+                    assignAdmin = checkMultiSelect('addAssignAdminDrop');
+                    if (!assignAdmin) {
+                        showNotification("Kolom 'Assign ke Admin / Depot' wajib dipilih saat membuat OSC/Non-OSC.", "warning");
+                        return;
+                    }
+                }
+            }
+
+            // Tentukan status Request
+            let isRequest = false;
+            if (selectedRole.includes('_req')) {
+                isRequest = true;
+                if (finalRole.includes('_req')) finalRole = finalRole.replace('_req', ''); 
+            }
+
+            document.getElementById('btnAddAccountText').innerText = "Memproses...";
+            document.getElementById('addAccountLoader').classList.remove('hidden');
+            document.getElementById('btnAddAccountSubmit').disabled = true;
+
+            try {
+                // Backend akan memproses data untuk dimasukkan ke DepoMaster
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        action: 'addAccount', 
+                        requesterId: currentUserData.userId,
+                        requesterRole: currentUserData.role,
+                        data: { nama: namaLengkap, userId, pin, email, role: finalRole, depotName, isRequest, assignOsc, assignAdmin }
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    if (isRequest) {
+                        showNotification("Request akun berhasil dikirim (Pending).", "success");
+                        logActivity(`Request pembuatan akun ${userId} (${finalRole})`);
+                    } else {
+                        showNotification("Akun baru berhasil dibuat!", "success");
+                        logActivity(`Membuat akun ${userId} (${finalRole})`);
+                    }
+                    document.getElementById('addAccountForm').reset();
+                    handleAddRoleChange(); // reset layout
+                } else {
+                    // Peringatan "Depot Penuh" (Slot 1, 2, 3 full) akan dikembalikan oleh backend di result.message
+                    showNotification(result.message || "Gagal memproses akun.", "error");
+                }
+            } catch (error) {
+                showNotification("Terjadi kesalahan jaringan.", "error");
+            } finally {
+                document.getElementById('btnAddAccountText').innerText = document.getElementById('addRole').value.includes('_req') ? "Kirim Permintaan (Request)" : "Buat Akun Sekarang";
+                document.getElementById('addAccountLoader').classList.add('hidden');
+                document.getElementById('btnAddAccountSubmit').disabled = false;
+            }
+        }
+
+        // --- SUBMIT UPLOAD CLAIM ---
+        async function submitSingleClaim() {
+            let noDocVal = document.getElementById('noDoc').value.trim();
+            if (!noDocVal) {
+                showNotification("No Document wajib diisi!", "warning");
+                return;
+            }
+
+            let tglLunasVal = document.getElementById('tglLunas').value; 
+            if(tglLunasVal && !tglLunasVal.includes("-")) {
+                showNotification("Format Tgl Lunas tidak valid!", "error");
+                return;
+            }
+            let tglLunasFormatted = tglLunasVal ? (tglLunasVal.split("-")[2] + "-" + tglLunasVal.split("-")[1] + "-" + tglLunasVal.split("-")[0]) : "";
+            
+            let blnTagihanVal = document.getElementById('bulanTagihan').value; 
+            if(blnTagihanVal && !blnTagihanVal.includes("-")) {
+                showNotification("Format Bulan Tagihan tidak valid!", "error");
+                return;
+            }
+            let blnTagihanFormatted = blnTagihanVal ? (blnTagihanVal.split("-")[1] + "-" + blnTagihanVal.split("-")[0].substring(2, 4)) : "";
+
+            const formData = {
+                tglClaim: document.getElementById('tglClaim').value,
+                noDoc: noDocVal,
+                codeCampaign: document.getElementById('codeCampaign').value,
+                campaign: document.getElementById('campaign').value,
+                custCode: document.getElementById('custCode').value,
+                custName: document.getElementById('custName').value,
+                netValue: document.getElementById('netValue').value.replace(/,/g, ''), 
+                vols: document.getElementById('vols').value,
+                cashback: document.getElementById('cashback').value.replace(/,/g, ''), 
+                periodStart: document.getElementById('periodStart').value,
+                campaignEnd: document.getElementById('campaignEnd').value,
+                noKtp: document.getElementById('noKtp').value,
+                noNpwp: document.getElementById('noNpwp').value,
+                statusPajak: document.getElementById('statusPajak').value,
+                tglLunas: tglLunasFormatted,       
+                bulanTagihan: blnTagihanFormatted, 
+                lewatTop: document.getElementById('lewatTop').value
+            };
+
+            await executeUpload(formData, 'Single');
+        }
+
+        async function submitMassClaim() {
+            if(massUploadDataValid.length === 0) return;
+            
+            let btnTxt = document.getElementById('btnSubmitTextMass');
+            let loader = document.getElementById('submitLoaderMass');
+            let btn = document.getElementById('btnSubmitMass');
+
+            let originalText = btnTxt.innerHTML;
+            loader.classList.remove('hidden');
+            btn.disabled = true;
+
+            let successCount = 0;
+            let errorCount = 0;
+            let lastUploadNo = "-";
+            let totalFreq = "-";
+
+            const BATCH_SIZE = 10;
+            let batches = [];
+            for (let i = 0; i < massUploadDataValid.length; i += BATCH_SIZE) {
+                batches.push(massUploadDataValid.slice(i, i + BATCH_SIZE));
+            }
+
+            for (let i = 0; i < batches.length; i++) {
+                let currentBatch = batches[i];
+                let progressText = `Upload Batch ${i+1}/${batches.length}...`;
+                btnTxt.innerHTML = `${progressText}<br><span class="text-[9px]">Memproses ${currentBatch.length} data. Tunggu...</span>`;
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'submitData', userData: currentUserData, data: currentBatch })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success' || result.status === 'warning') {
+                        successCount += (result.summary ? result.summary.successCount : 0);
+                        errorCount += (result.summary ? result.summary.duplicateCount : 0);
+                        
+                        if(result.summary && result.summary.noUpload !== "-") {
+                            lastUploadNo = result.summary.noUpload;
+                            totalFreq = result.summary.totalHariIni;
+                        }
+                    } else {
+                        errorCount += currentBatch.length;
+                    }
+                } catch(e) {
+                    errorCount += currentBatch.length;
+                }
+                
+                if (i < batches.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+
+            document.getElementById('modNoUpload').innerText = lastUploadNo;
+            document.getElementById('modTotalSuccess').innerText = successCount + " Data Masuk";
+            document.getElementById('modTotalDuplicate').innerText = errorCount + " Ditolak";
+            document.getElementById('modTotal').innerText = totalFreq + "x Upload";
+
+            const hdBg = document.getElementById('modHeaderBg');
+            const icBg = document.getElementById('modIconBg');
+            const ic = document.getElementById('modIcon');
+            const title = document.getElementById('modTitle');
+            const sub = document.getElementById('modSubtitle');
+
+            if(successCount > 0) {
+                hdBg.className = "bg-green-50 px-6 py-6 border-b border-green-100 text-center";
+                icBg.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-4";
+                ic.className = "fas fa-check text-green-600 text-2xl";
+                title.innerText = "Mass Upload Selesai!";
+                sub.innerText = "Sistem telah mengecek DataClaim & menyimpan data valid.";
+                logActivity(`Mass Upload ${successCount} data sukses`);
+            } else {
+                hdBg.className = "bg-red-50 px-6 py-6 border-b border-red-100 text-center";
+                icBg.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4";
+                ic.className = "fas fa-times text-red-600 text-2xl";
+                title.innerText = "Upload Ditolak Server!";
+                sub.innerText = "Semua baris Excel Anda terdeteksi sudah ada di DataClaim.";
+                logActivity(`Mass Upload gagal/ditolak (Duplicate)`);
+            }
+
+            document.getElementById('summaryModal').classList.remove('hidden');
+            btnTxt.innerHTML = originalText;
+            loader.classList.add('hidden');
+            resetMassForm();
+        }
+
+        async function executeUpload(dataPayload, mode) {
+            let btnTxt = document.getElementById('btnSubmitTextSingle');
+            let loader = document.getElementById('submitLoaderSingle');
+            let btn = document.getElementById('btnSubmitSingle');
+
+            let originalText = btnTxt.innerHTML;
+            btnTxt.innerHTML = "Mengupload...";
+            loader.classList.remove('hidden');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'submitData', userData: currentUserData, data: dataPayload })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success' || result.status === 'warning') {
+                    showSummaryModal(result.summary, false);
+                    logActivity(`Single Upload NoDoc: ${dataPayload.noDoc}`);
+                    resetSingleForm();
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                    logActivity(`Gagal Single Upload: ${dataPayload.noDoc}`);
+                }
+            } catch (error) {
+                showNotification("Terjadi kesalahan jaringan/timeout.", "error");
+            } finally {
+                btnTxt.innerHTML = originalText;
+                loader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
