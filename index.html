@@ -1073,7 +1073,7 @@
         function addInputRow() { if (currentInputRows >= 20) { showNotification("Maksimal 20 baris.", "warning"); return; } let tbody = document.getElementById('inputGridBody'); tbody.querySelector(`[data-idx="${currentInputRows}"]`).style.display = ''; currentInputRows++; updateRowCountDisplay(); }
         function removeInputRow() { if (currentInputRows <= 1) return; let tbody = document.getElementById('inputGridBody'); currentInputRows--; let row = tbody.querySelector(`[data-idx="${currentInputRows}"]`); row.style.display = 'none'; row.querySelectorAll('input').forEach(i => i.value = ''); updateRowCountDisplay(); }
         function resetInputGrid() { currentInputRows = 5; initInputGrid(); }
-        function cancelPreview() { setHiddenSafely('uploadPreviewContainer', true); setHiddenSafely('uploadInputContainer', false); setHiddenSafely('tab_single', true); hasMasterUpdateFlag = false; massUploadDataValid = []; }
+        function cancelPreview() { setHiddenSafely('uploadPreviewContainer', true); setHiddenSafely('tab_mass', false); setHiddenSafely('tab_single', true);  setHiddenSafely('uploadModuleTabs', false); hasMasterUpdateFlag = false; massUploadDataValid = []; }
 
         function previewUploadData(mode) {
             massUploadDataValid = []; hasMasterUpdateFlag = false; let v = 0;
