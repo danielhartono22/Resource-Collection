@@ -218,7 +218,7 @@
                         <table class="w-full text-left whitespace-nowrap text-xs excel-table" id="inputGrid">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="w-10 text-center">#</th><th class="min-w-[150px]">No Document*</th><th class="min-w-[120px]">Tgl Lunas*</th><th class="min-w-[150px]">No KTP</th><th class="min-w-[150px]">No NPWP</th><th class="min-w-[150px]">No Rekening</th><th class="min-w-[150px]">Nama Rekening</th><th class="min-w-[150px]">Bank</th><th class="min-w-[80px]">TOP</th><th class="min-w-[100px]">Approval</th><th class="min-w-[100px]">Bln Potong 1</th><th class="min-w-[100px]">Bln Potong 2</th><th class="min-w-[100px]">Bln Potong 3</th><th class="min-w-[100px]">Bln Potong 4</th><th class="min-w-[150px]">Total Tagihan</th>
+                                    <th class="w-10 text-center">#</th><th class="min-w-[150px]">No Document*</th><th class="min-w-[120px]">Tgl Lunas*</th><th class="min-w-[150px]">No KTP</th><th class="min-w-[150px]">No NPWP</th><th class="min-w-[150px]">No Rekening</th><th class="min-w-[150px]">Nama Rekening</th><th class="min-w-[150px]">Bank</th><th class="min-w-[80px]">TOP*</th><th class="min-w-[100px]">Approval</th><th class="min-w-[100px]">Bln Potong 1</th><th class="min-w-[100px]">Bln Potong 2</th><th class="min-w-[100px]">Bln Potong 3</th><th class="min-w-[100px]">Bln Potong 4</th><th class="min-w-[150px]">Total Tagihan</th>
                                 </tr>
                             </thead>
                             <tbody id="inputGridBody" class="divide-y divide-gray-200 bg-white"></tbody>
@@ -248,7 +248,7 @@
                         <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-5">
                             <h3 class="text-xs font-black text-gray-700 uppercase mb-4 border-b border-gray-100 pb-2">Kelengkapan Administrasi</h3>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                                <div><label class="block text-xs font-bold text-gray-700 mb-1">Tgl Lunas <span class="text-red-500">*</span></label><input type="date" id="singleTglLunas" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"></div>
+                                <div><label class="block text-xs font-bold text-gray-700 mb-1">Tgl Lunas <span class="text-red-500">*</span></label><input type="text" id="singleTglLunas" placeholder="YYYY-MM-DD" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">No KTP (Auto DB)</label><input type="text" id="singleKtp" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed text-gray-500 font-bold"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">No NPWP (Auto DB)</label><input type="text" id="singleNpwp" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed text-gray-500 font-bold"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">Approval <span class="text-[9px] text-gray-400 font-normal">(TOP > Master)</span></label><select id="singleApproval" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"><option value="">-- Pilih --</option><option value="NSM">NSM</option><option value="RSM">RSM</option><option value="Lainnya">Lainnya</option></select></div>
@@ -259,12 +259,12 @@
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">Bank</label><input type="text" id="singleBank" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"></div>
                             </div>
                             <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-                                <div class="col-span-2 md:col-span-1"><label class="block text-xs font-bold text-gray-700 mb-1">Actual TOP</label><input type="number" id="singleTop" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-center shadow-sm"></div>
+                                <div class="col-span-2 md:col-span-1"><label class="block text-xs font-bold text-gray-700 mb-1">Actual TOP <span class="text-red-500">*</span></label><input type="number" id="singleTop" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-center shadow-sm"></div>
                                 <div><label class="block text-[10px] font-bold text-gray-700 mb-1">Bln Potong 1</label><input type="text" id="singleBln1" class="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm bg-white uppercase text-center shadow-sm" placeholder="MMM-YY"></div>
                                 <div><label class="block text-[10px] font-bold text-gray-700 mb-1">Bln Potong 2</label><input type="text" id="singleBln2" class="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm bg-white uppercase text-center shadow-sm" placeholder="Opt"></div>
                                 <div><label class="block text-[10px] font-bold text-gray-700 mb-1">Bln Potong 3</label><input type="text" id="singleBln3" class="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm bg-white uppercase text-center shadow-sm" placeholder="Opt"></div>
                                 <div><label class="block text-[10px] font-bold text-gray-700 mb-1">Bln Potong 4</label><input type="text" id="singleBln4" class="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm bg-white uppercase text-center shadow-sm" placeholder="Opt"></div>
-                                <div class="col-span-2 md:col-span-1"><label class="block text-xs font-bold text-gray-700 mb-1">Total Tagihan (Req)</label><input type="text" id="singleTotTagih" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-right font-bold text-indigo-700 shadow-sm" placeholder="Rp" onkeyup="formatCurrencyInput(this)"></div>
+                                <div class="col-span-2 md:col-span-1"><label class="block text-xs font-bold text-gray-700 mb-1">Total Tagihan</label><input type="text" id="singleTotTagih" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-right font-bold text-indigo-700 shadow-sm" placeholder="Rp" onkeyup="formatCurrencyInput(this)"></div>
                             </div>
                         </div>
                         <div class="flex justify-end gap-3 pt-2">
@@ -422,7 +422,7 @@
                 <!-- SUB TAB: HISTORY -->
                 <div id="tab_history" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
                     <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
-                        <div><h2 class="text-xl font-bold text-gray-800"><i class="fas fa-history text-teal-600 mr-2"></i>Database Riwayat Terpadu</h2></div>
+                        <div><h2 class="text-xl font-bold text-gray-800"><i class="fas fa-history text-teal-600 mr-2"></i>Riwayat Detail Customer</h2></div>
                         <button onclick="fetchDashboardData()" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 text-sm font-bold py-2 px-4 rounded-lg shadow-sm transition"><i class="fas fa-sync-alt mr-2 text-teal-500"></i> Refresh Data</button>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6 flex flex-wrap gap-4 shadow-sm">
@@ -435,7 +435,7 @@
                         <table class="w-full text-left border-collapse bg-white whitespace-nowrap">
                             <thead class="bg-gray-100 border-b border-gray-200">
                                 <tr>
-                                    <th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">No Doc</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Kode Toko</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Nama Toko</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Kode Campaign</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Campaign</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">Total Reward</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Status</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Tanggal Claim</th><th class="p-3.5 text-center"></th>
+                                    <th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">No Doc</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Kode Toko</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Nama Toko</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Kode Campaign</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider">Campaign</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">Total Reward</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Status</th><th class="p-3.5 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Tanggal Proses (Clearing)</th><th class="p-3.5 text-center"></th>
                                 </tr>
                             </thead>
                             <tbody id="historyTableBody" class="divide-y divide-gray-100 text-sm"></tbody>
@@ -632,34 +632,48 @@
 
         function showActionResult(title, successList, failList, actionType, batchNum = null) {
             document.getElementById('actionResultTitle').innerHTML = `<i class="fas fa-info-circle text-blue-500 mr-2"></i>` + title;
-            let statsHtml = `<div class="flex-1 bg-green-50 border border-green-200 p-3 rounded-xl"><span class="block text-[10px] uppercase font-bold text-green-600 mb-1">Berhasil</span><span class="text-2xl font-black text-green-700">${successList.length}</span></div>`;
-            if (failList && failList.length > 0) statsHtml += `<div class="flex-1 bg-red-50 border border-red-200 p-3 rounded-xl"><span class="block text-[10px] uppercase font-bold text-red-600 mb-1">Gagal / Ditolak</span><span class="text-2xl font-black text-red-700">${failList.length}</span></div>`;
+            
+            let isReject = actionType === 'reject';
+            let successLabel = isReject ? 'Berhasil Ditolak' : 'Berhasil';
+            let successColor = isReject ? 'text-red-700' : 'text-green-700';
+            let successBg = isReject ? 'bg-red-50 border-red-200 text-red-600' : 'bg-green-50 border-green-200 text-green-600';
+            
+            let statsHtml = `<div class="flex-1 ${successBg} p-3 rounded-xl border"><span class="block text-[10px] uppercase font-bold mb-1">${successLabel}</span><span class="text-2xl font-black ${successColor}">${successList.length}</span></div>`;
+            
+            if (failList && failList.length > 0) {
+                statsHtml += `<div class="flex-1 bg-gray-50 border border-gray-200 p-3 rounded-xl"><span class="block text-[10px] uppercase font-bold text-gray-600 mb-1">Gagal Diproses</span><span class="text-2xl font-black text-gray-700">${failList.length}</span></div>`;
+            }
             document.getElementById('actionResultStats').innerHTML = statsHtml;
             
             let tbody = '';
             successList.forEach(s => { 
-                tbody += `<tr class="hover:bg-gray-50">
-                    <td class="p-3 font-bold text-blue-700">${s.noDoc}</td>
+                let rowBgClass = isReject ? 'bg-red-50/30 hover:bg-red-50' : 'hover:bg-gray-50';
+                let docColor = isReject ? 'text-red-700' : 'text-blue-700';
+                let badgeHtml = isReject ? `<span class="bg-red-100 text-red-800 px-2 py-1 rounded text-[10px] font-bold">Ditolak (Kembali)</span>` : `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-[10px] font-bold">Sukses</span>`;
+                let valHtml = isReject ? `<span class="text-xs text-red-600 font-bold">Batch Prev:<br>${s.prevBatch || '-'}</span>` : `<span class="text-indigo-600 font-black">Rp ${Number(s.reward||0).toLocaleString('id-ID')}</span>`;
+
+                tbody += `<tr class="${rowBgClass} transition-colors border-b border-gray-100">
+                    <td class="p-3 font-bold ${docColor}">${s.noDoc}</td>
                     <td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeCamp||"-"}</span><br><span class="text-gray-500">${s.namaCamp||"-"}</span></td>
                     <td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeToko||"-"}</span><br><span class="text-gray-500">${s.namaToko||"-"}</span></td>
-                    <td class="p-3 text-right font-black text-indigo-600">Rp ${Number(s.reward||0).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-[10px] font-bold">Sukses</span></td>
+                    <td class="p-3 text-right border-l border-gray-100">${valHtml}</td>
+                    <td class="p-3 text-center">${badgeHtml}</td>
                 </tr>`; 
             });
             if (failList) failList.forEach(f => { 
-                tbody += `<tr class="bg-red-50/30 hover:bg-red-50">
-                    <td class="p-3 font-bold text-red-700">${f.noDoc}</td>
+                tbody += `<tr class="bg-gray-50/50 hover:bg-gray-100 border-b border-gray-100">
+                    <td class="p-3 font-bold text-gray-600">${f.noDoc}</td>
                     <td class="p-3 text-xs">-</td>
                     <td class="p-3 text-xs font-medium text-gray-800">${f.toko||f.namaToko||"-"}</td>
                     <td class="p-3 text-right">-</td>
-                    <td class="p-3 text-center"><span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-[10px] font-bold">Gagal: ${f.reason}</span></td>
+                    <td class="p-3 text-center"><span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">Gagal: ${f.reason}</span></td>
                 </tr>`; 
             });
             
             document.getElementById('actionResultBody').innerHTML = tbody; 
             
             let batchContainer = document.getElementById('actionBatchContainer');
-            if (batchNum && batchNum !== '-') {
+            if (batchNum && batchNum !== '-' && !isReject) {
                 batchContainer.classList.remove('hidden');
                 document.getElementById('actionResultBatchNo').innerText = batchNum;
             } else {
@@ -727,11 +741,8 @@
             document.getElementById('singleRek').value = cst.noRek || ''; 
             document.getElementById('singleNamaRek').value = cst.namaRek || ''; 
             document.getElementById('singleBank').value = cst.bank || ''; 
-            document.getElementById('singleTop').value = cst.top || '';
-            if(!document.getElementById('singleTotTagih').value) {
-                document.getElementById('singleTotTagih').value = db.cbNet || '';
-                formatCurrencyInput(document.getElementById('singleTotTagih'));
-            }
+            document.getElementById('singleTop').value = ''; 
+            document.getElementById('singleTotTagih').value = ''; 
         }
 
         function resetSingleForm() {
@@ -997,7 +1008,7 @@
                 html += `<tr class="border-b border-gray-200 row-input transition-colors" ${display} data-idx="${i}">
                     <td class="text-center text-gray-400 bg-gray-50 border-r border-gray-200 w-10">${i + 1}</td>
                     <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input font-bold text-blue-700 uppercase" placeholder="DOC-..." name="noDoc"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="date" class="excel-input text-gray-700" name="tglLunas"></td>
+                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="YYYY-MM-DD" name="tglLunas"></td>
                     <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="ktp"></td>
                     <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="npwp"></td>
                     <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="noRekening"></td>
@@ -1098,21 +1109,23 @@
                     else if (db_npwp) { final_subyekpajak = "Badan"; } else if (db_ktp) { final_subyekpajak = "Perorangan"; } 
                     else { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">KTP/NPWP Kosong (Update DB)</span>`; }
 
-                    let ex_norek = inputData.norek, ex_namarek = inputData.namarek, ex_bank = inputData.bank, in_top = parseFloat(inputData.top || 0), in_approval = inputData.approval, in_bln1 = normalizeMonthUI(inputData.bln1), in_bln2 = normalizeMonthUI(inputData.bln2), in_bln3 = normalizeMonthUI(inputData.bln3), in_bln4 = normalizeMonthUI(inputData.bln4), in_totTagih = inputData.totTagih.replace(/[^,\d]/g, ''), in_tglLunas = inputData.tglLunas;
+                    let ex_norek = inputData.norek, ex_namarek = inputData.namarek, ex_bank = inputData.bank, in_top = parseFloat(inputData.top), in_approval = inputData.approval, in_bln1 = normalizeMonthUI(inputData.bln1), in_bln2 = normalizeMonthUI(inputData.bln2), in_bln3 = normalizeMonthUI(inputData.bln3), in_bln4 = normalizeMonthUI(inputData.bln4), in_totTagih = inputData.totTagih ? inputData.totTagih.replace(/[^,\d]/g, '') : '', in_tglLunas = inputData.tglLunas;
 
-                    let final_norek = ex_norek || String(cst.noRek || '').trim(), final_namarec = ex_namarek || String(cst.namaRek || '').trim(), final_bank = ex_bank || String(cst.bank || '').trim(), final_top = in_top || parseFloat(cst.top || 0), master_top = parseFloat(cst.top || 0);
+                    let final_norek = ex_norek || String(cst.noRek || '').trim(), final_namarec = ex_namarek || String(cst.namaRek || '').trim(), final_bank = ex_bank || String(cst.bank || '').trim(), final_top = in_top, master_top = parseFloat(cst.top || 0);
 
                     if (isValid && !in_tglLunas) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Tgl Lunas Wajib</span>`; }
+                    if (isValid && (isNaN(in_top) || in_top <= 0)) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">TOP Wajib Diisi</span>`; }
                     if (isValid && final_top > master_top && !in_approval) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Approval Wajib (TOP > Master)</span>`; }
+                    
                     if (isValid && cmp.jenisCb === 'Transfer') { if (!final_norek || !final_namarec || !final_bank) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Rekening Wajib Ada</span>`; } } 
-                    else if (isValid && cmp.jenisCb === 'CN') { if (!in_bln1 || !in_totTagih) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Bln Potong 1 & Total Req Wajib</span>`; } }
+                    else if (isValid && cmp.jenisCb === 'CN') { if (!in_bln1 || !in_totTagih) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Bln 1 & Tot Tagihan Wajib (CN)</span>`; } }
 
                     if (isValid) {
                         let isChangeRek = (ex_norek && ex_norek !== String(cst.noRek || '').trim()) || (ex_namarek && ex_namarek !== String(cst.namaRek || '').trim()) || (ex_bank && ex_bank !== String(cst.bank || '').trim());
                         if(isChangeRek) { trInfo = `<span class="bg-red-500 text-white px-2 py-0.5 rounded font-black text-[9px] animate-pulse shadow-sm">⚠️ Update Master Rek</span>`; hasMasterUpdateFlag = true; } 
                         else { trInfo = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold shadow-sm">Valid</span>`; }
 
-                        massUploadDataValid.push({ noDoc: nd, dcCode: db.dcCode, depotName: normalizeName(db.depotName), codeCampaign: db.codeCampaign, campaignName: db.campaignName, custCode: db.custCode, custName: normalizeName(db.custName), netValue: db.netValue, volume: db.volume, cbNet: db.cbNet, periodStart: cmp.periodStart, campaignEnd: cmp.periodEnd, npwp: db_npwp, ktp: db_ktp, statusPajakCust: final_subyekpajak, tglLunas: in_tglLunas, top: final_top, approval: in_approval, blnTagih1: in_bln1, blnTagih2: in_bln2, blnTagih3: in_bln3, blnTagih4: in_bln4, totTagih: in_totTagih || db.cbNet, subyekPajak: final_subyekpajak, statusPajakCampaign: cmp.statusPajak, jenisCashback: cmp.jenisCb, noRekening: final_norek, pemilikRekening: final_namarec, bankCust: final_bank }); v++;
+                        massUploadDataValid.push({ noDoc: nd, dcCode: db.dcCode, depotName: normalizeName(db.depotName), codeCampaign: db.codeCampaign, campaignName: db.campaignName, custCode: db.custCode, custName: normalizeName(db.custName), netValue: db.netValue, volume: db.volume, cbNet: db.cbNet, periodStart: cmp.periodStart, campaignEnd: cmp.periodEnd, npwp: db_npwp, ktp: db_ktp, statusPajakCust: final_subyekpajak, tglLunas: in_tglLunas, top: final_top, approval: in_approval, blnTagih1: in_bln1, blnTagih2: in_bln2, blnTagih3: in_bln3, blnTagih4: in_bln4, totTagih: in_totTagih, subyekPajak: final_subyekpajak, statusPajakCampaign: cmp.statusPajak, jenisCashback: cmp.jenisCb, noRekening: final_norek, pemilikRekening: final_namarec, bankCust: final_bank }); v++;
 
                         rowsHtml += `<tr class="hover:bg-blue-50 transition-colors border-b border-gray-100">
                             <td class="p-3 text-center"><input type="checkbox" class="cb-upload w-4 h-4 text-blue-600 rounded focus:ring-blue-500" value="${nd}" checked onchange="updateUploadCount()"></td>
@@ -1120,7 +1133,7 @@
                             <td class="p-3 font-bold text-gray-800">${normalizeName(db.custName)}</td><td class="p-3 font-semibold text-gray-500">${db.codeCampaign || '-'}</td>
                             <td class="p-3 max-w-[150px] truncate" title="${db.campaignName}">${db.campaignName || '-'}</td><td class="p-3 text-right font-black text-red-600">Rp ${Number(db.cbNet || 0).toLocaleString('id-ID')}</td>
                             <td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_norek || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_namarec || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_bank || '-'}</td>
-                            <td class="p-3 text-gray-700">${db_ktp || '-'}</td><td class="p-3 text-gray-700">${db_npwp || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${final_subyekpajak || '-'}</td><td class="p-3 text-center font-black">${final_top || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${in_approval || '-'}</td><td class="p-3 text-center font-bold">${cmp.jenisCb || '-'}</td><td class="p-3 text-center font-bold text-green-700">${[in_bln1,in_bln2,in_bln3,in_bln4].filter(Boolean).join(', ') || '-'}</td><td class="p-3 text-right font-bold text-indigo-700">Rp ${Number(in_totTagih || db.cbNet || 0).toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-gray-700">${db_ktp || '-'}</td><td class="p-3 text-gray-700">${db_npwp || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${final_subyekpajak || '-'}</td><td class="p-3 text-center font-black">${final_top || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${in_approval || '-'}</td><td class="p-3 text-center font-bold">${cmp.jenisCb || '-'}</td><td class="p-3 text-center font-bold text-green-700">${[in_bln1,in_bln2,in_bln3,in_bln4].filter(Boolean).join(', ') || '-'}</td><td class="p-3 text-right font-bold text-indigo-700">Rp ${Number(in_totTagih || 0).toLocaleString('id-ID')}</td>
                         </tr>`;
                     }
                 }
@@ -1158,10 +1171,17 @@
                 let dataWithBatch = dataToSubmit.map(item => { return { ...item, batchNumUpload: batchNum }; });
                 let res = await fetchApp({ action: 'submitData', userData: currentUserData, data: dataWithBatch });
                 if (res.status === 'success' || res.status === 'warning') { 
+                    let succDocs = res.summary?.successfulDocs || [];
+                    let successDetails = dataWithBatch.filter(d => succDocs.includes(d.noDoc.toUpperCase())).map(d => ({
+                        noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.custCode, namaToko: d.custName, reward: d.cbNet || d.totTagih
+                    }));
+                    
                     logActivity(`Claim Upload Web: ${res.summary?.successCount || dataWithBatch.length} dokumen. No Batch: ${batchNum}`); 
-                    showActionResult("Laporan Eksekusi Upload Data", res.successDetails || [], res.failedDetails || [], "Upload", batchNum);
+                    showActionResult("Laporan Eksekusi Upload Data", successDetails, [], "Upload", batchNum);
                     resetInputGrid(); cancelPreview(); setHiddenSafely('uploadModuleTabs', false);
-                } else showNotification(res.message, "error");
+                } else {
+                    showNotification(res.message, "error");
+                }
             } catch (e) { showNotification("Terjadi kesalahan saat upload.", "error"); resetInputGrid(); cancelPreview(); setHiddenSafely('uploadModuleTabs', false); } 
             finally { setHiddenSafely('submitLoaderUpload', true); }
         }
@@ -1245,11 +1265,26 @@
                     let uniqueBatches = [...new Set(Object.values(batchMapping))].filter(b => b !== "-");
                     let batchNum = uniqueBatches.length > 0 ? uniqueBatches[0] : null;
                     let batchMsg = actionType === 'approve' && batchNum ? `. No Batch: ${batchNum}` : '';
+                    
+                    let succDocs = res.summary?.successfulDocs || [];
+                    let successDetails = dataSource.filter(d => succDocs.includes(d.noDoc)).map(d => {
+                        let pBatch = '-';
+                        if (type === 'release') pBatch = d.batchUpload;
+                        else if (type === 'claim') pBatch = d.batchRelease;
+                        else if (type === 'clearing') pBatch = d.batchClaim;
+                        
+                        return {
+                            noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.kodeToko, namaToko: d.namaToko, reward: d.cbNet, prevBatch: pBatch || '-'
+                        };
+                    });
+                    
                     logActivity(`Workflow ${type.toUpperCase()} [${actionType}]: ${docs.length} dokumen diproses${batchMsg}`); 
                     
-                    showActionResult(`Laporan Workflow ${type.toUpperCase()}`, res.successDetails || [], res.failedDetails || [], type, batchNum);
+                    showActionResult(`Laporan Workflow ${type.toUpperCase()}`, successDetails, [], actionType, batchNum);
                     fetchWorkflowData(); 
-                } else showNotification("Gagal", "error");
+                } else {
+                    showNotification("Gagal", "error");
+                }
             } catch (e) { showNotification("Terjadi kesalahan saat memproses workflow.", "error"); fetchWorkflowData(); } finally { hideLoadingOverlay(); }
         }
 
