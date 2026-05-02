@@ -1335,8 +1335,8 @@
                 else if (type === 'claim') pBatch = r.batchRelease || '-';
                 else if (type === 'clearing') pBatch = r.batchClaim || '-';
 
-                let cstLocal = globalCustomers.find(c => c.custCode === r.kodeToko) || {};
-                let strPajak = String(cstLocal.subyekPajak || r.statusPajakCust || r.statusPajakCamp || "").toLowerCase();
+                // PERBAIKAN: Fokus filter hanya ke Status Pajak Campaign
+                let strPajak = String(r.statusPajakCamp || "").toLowerCase();
 
                 let matchSearch = !sv || Object.values(r).some(val => val !== null && String(val).toLowerCase().includes(sv)) || pBatch.toLowerCase().includes(sv);
                 let matchDepot = (sd.length === 0 || sd.includes(r.depot));
@@ -1363,7 +1363,7 @@
                 let valRek = cst.noRek || r.noRekening || '-';
                 let valNamaRek = cst.namaRek || r.pemilikRekening || '-';
                 let valBank = cst.bank || r.bankCust || '-';
-                let valTotTagih = doc.totTagih || r.totTagih || r.cbNet || 0;
+                let valTotTagih = Number(r.totTagih) || 0;
 
                 // Campaign Data
                 let valVolume = doc.volume || 0;
@@ -1386,7 +1386,7 @@
                             <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-id-card mr-1"></i> Identitas & Pajak</span> <span class="font-bold text-gray-800 block text-xs truncate">KTP: ${valKtp} | NPWP: ${valNpwp}</span><span class="font-bold text-gray-800 block text-xs truncate">Sbyk: ${valSubyekPajak} | Stat: ${valStatusPajak}</span></div>
                             <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-money-check-alt mr-1"></i> Rekening</span> <span class="font-bold text-gray-800 block text-xs truncate">${valRek}</span><span class="font-bold text-gray-800 block text-xs truncate">${valNamaRek} (${valBank})</span></div>
                             <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-box mr-1"></i> Data Campaign</span> <span class="font-bold text-gray-800 block text-xs truncate">Vol: ${valVolume} | Val: Rp ${Number(valNetValue).toLocaleString('id-ID')}</span><span class="font-bold text-gray-800 block text-xs truncate">TOP: ${valTop} Hr | Lns: ${valLunas}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-receipt mr-1"></i> Reward & Tagihan</span> <span class="font-bold text-gray-800 block text-xs truncate">CB Net: Rp ${Number(r.cbNet || 0).toLocaleString('id-ID')}</span><span class="font-black text-indigo-700 block text-sm mt-0.5 truncate">Tagihan: Rp ${Number(valTotTagih).toLocaleString('id-ID')}</span></div>
+                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-receipt mr-1"></i> Nilai Tagihan</span> <span class="font-black text-indigo-700 block text-sm mt-1 truncate">Rp ${Number(valTotTagih).toLocaleString('id-ID')}</span></div>
                         </div>
                     </td>
                 </tr>`; 
