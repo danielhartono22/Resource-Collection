@@ -32,7 +32,6 @@
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex w-full md:w-auto justify-between md:justify-start items-center gap-4 sm:gap-6">
                 <div class="flex items-center cursor-pointer shrink-0" onclick="goToHome()">
-                    <!-- Ganti images/logo.png dengan link logo yang valid -->
                     <img src="images/logo.png" alt="Logo" class="h-10 w-auto mr-3 drop-shadow-md" onerror="this.onerror=null; this.outerHTML='<i class=\'fas fa-boxes text-2xl mr-3 text-yellow-300\'></i>';">
                     <div class="flex flex-col"><h1 class="text-xl font-black tracking-tight leading-tight">Resource Collection</h1></div>
                 </div>
@@ -48,30 +47,26 @@
                     <i class="fas fa-clock text-yellow-400 mr-2 animate-pulse"></i><span id="runtimeCounter" class="font-bold tracking-widest">00:00:00</span>
                 </div>
                 
-                <!-- BUNGKUS PROFIL DAN LOGOUT -->
                 <div class="flex items-center gap-2 relative">
-                    <!-- BUNGKUS DROPDOWN (RELATIVE) -->
-                    <div class="relative">
-                        <button onclick="toggleMultiSelect('settingsDropdown')" class="flex items-center gap-3 hover:bg-red-800 p-2 rounded-xl transition border border-transparent focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <div class="relative" id="userMenuContainer">
+                        <button onclick="document.getElementById('userDropdownMenu').classList.toggle('hidden')" class="flex items-center gap-3 hover:bg-red-800 p-2 rounded-xl transition border border-transparent focus:outline-none focus:ring-2 focus:ring-red-400">
                             <div class="text-right hidden sm:block"><p class="text-sm font-bold text-white leading-none mb-1" id="topUserDisplay">User</p><p class="text-[10px] font-black uppercase text-yellow-300 tracking-wider leading-none" id="topRoleDisplay">Role</p></div>
                             <div class="w-9 h-9 rounded-full bg-white text-red-700 flex justify-center items-center font-bold text-lg shadow-md border-2 border-red-300"><i class="fas fa-user"></i></div>
                             <i class="fas fa-chevron-down text-xs text-red-300"></i>
                         </button>
                         
-                        <!-- ISI DROPDOWN -->
-                        <div id="settingsDropdown" class="multiselect-dropdown absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden transform origin-top-right transition-all">
+                        <div id="userDropdownMenu" class="hidden absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 transform origin-top-right transition-all">
                             <div class="p-2 space-y-1">
-                                <button onclick="openProfileView()" class="w-full flex items-center px-3 py-2.5 hover:bg-blue-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 group-hover:bg-blue-600 group-hover:text-white transition"><i class="fas fa-id-card"></i></div> Profil Depot</button>
-                                <button onclick="window.open('https://resourcehub.enipponpaint.com/id/pages/search.php','_blank')" class="w-full flex items-center px-3 py-2.5 hover:bg-green-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3 group-hover:bg-green-600 group-hover:text-white transition"><i class="fas fa-external-link-alt"></i></div> Resource Hub</button>
-                                <button onclick="window.open('https://danielhartono22.github.io/HelpDesk/','_blank')" class="w-full flex items-center px-3 py-2.5 hover:bg-teal-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition"><i class="fas fa-headset"></i></div> Helpdesk</button>
+                                <button onclick="openProfileView(); document.getElementById('userDropdownMenu').classList.add('hidden')" class="w-full flex items-center px-3 py-2.5 hover:bg-blue-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 group-hover:bg-blue-600 group-hover:text-white transition"><i class="fas fa-id-card"></i></div> Profil Depot</button>
+                                <button onclick="window.open('https://resourcehub.enipponpaint.com/id/pages/search.php','_blank'); document.getElementById('userDropdownMenu').classList.add('hidden')" class="w-full flex items-center px-3 py-2.5 hover:bg-green-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3 group-hover:bg-green-600 group-hover:text-white transition"><i class="fas fa-external-link-alt"></i></div> Resource Hub</button>
+                                <button onclick="window.open('https://danielhartono22.github.io/HelpDesk/','_blank'); document.getElementById('userDropdownMenu').classList.add('hidden')" class="w-full flex items-center px-3 py-2.5 hover:bg-teal-50 rounded-lg text-gray-700 font-semibold transition group"><div class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:bg-teal-600 group-hover:text-white transition"><i class="fas fa-headset"></i></div> Helpdesk</button>
                             </div>
                             <div class="border-t border-gray-100 p-2 bg-gray-50">
-                                <button onclick="openRequestPinModal(); toggleMultiSelect('settingsDropdown')" id="dropBtnReqPin" class="hidden w-full flex items-center px-3 py-2 hover:bg-orange-100 rounded-lg text-orange-700 font-bold transition"><i class="fas fa-key w-5 text-center mr-2"></i> Ganti PIN</button>
+                                <button onclick="openRequestPinModal(); document.getElementById('userDropdownMenu').classList.add('hidden')" id="dropBtnReqPin" class="hidden w-full flex items-center px-3 py-2 hover:bg-orange-100 rounded-lg text-orange-700 font-bold transition"><i class="fas fa-key w-5 text-center mr-2"></i> Ganti PIN</button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- TOMBOL LOGOUT UTAMA DI LUAR DROPDOWN -->
                     <button onclick="reqLogout()" class="bg-red-900/80 hover:bg-red-900 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md border border-red-600 transition flex items-center gap-2" title="Keluar Sistem">
                         <i class="fas fa-sign-out-alt"></i><span class="hidden md:inline">Logout</span>
                     </button>
@@ -266,7 +261,7 @@
                         <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-5">
                             <h3 class="text-xs font-black text-gray-700 uppercase mb-4 border-b border-gray-100 pb-2">Kelengkapan Administrasi</h3>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                                <div><label class="block text-xs font-bold text-gray-700 mb-1">Tgl Lunas <span class="text-red-500">*</span></label><input type="text" id="singleTglLunas" placeholder="YYYY-MM-DD" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"></div>
+                                <div><label class="block text-xs font-bold text-gray-700 mb-1">Tgl Lunas <span class="text-red-500">*</span></label><input type="text" id="singleTglLunas" placeholder="DD-MM-YYYY" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">No KTP (Auto DB)</label><input type="text" id="singleKtp" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed text-gray-500 font-bold"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">No NPWP (Auto DB)</label><input type="text" id="singleNpwp" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed text-gray-500 font-bold"></div>
                                 <div><label class="block text-xs font-bold text-gray-700 mb-1">Approval <span class="text-[9px] text-gray-400 font-normal">(TOP > Master)</span></label><select id="singleApproval" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white shadow-sm"><option value="">-- Pilih --</option><option value="NSM">NSM</option><option value="RSM">RSM</option><option value="Lainnya">Lainnya</option></select></div>
@@ -376,8 +371,8 @@
                             <label class="block text-xs font-bold text-indigo-800 mb-1.5">Status Pajak</label>
                             <select id="cfFilterPajak" onchange="triggerFilterCallback('claim')" class="w-full px-3 py-2.5 border border-indigo-200 rounded-lg bg-white text-sm shadow-sm font-medium text-gray-700">
                                 <option value="ALL">Semua Pajak</option>
-                                <option value="perusahaan">Ditanggung Nipsea/Pershn</option>
-                                <option value="customer">Ditanggung Customer</option>
+                                <option value="Ditanggung Perusahaan">Ditanggung Perusahaan</option>
+                                <option value="Ditanggung Customer">Ditanggung Customer</option>
                             </select>
                         </div>
                     </div>
@@ -416,8 +411,8 @@
                             <label class="block text-xs font-bold text-emerald-800 mb-1.5">Status Pajak</label>
                             <select id="clrFilterPajak" onchange="triggerFilterCallback('clearing')" class="w-full px-3 py-2.5 border border-emerald-200 rounded-lg bg-white text-sm shadow-sm font-medium text-gray-700">
                                 <option value="ALL">Semua Pajak</option>
-                                <option value="perusahaan">Ditanggung Nipsea/Pershn</option>
-                                <option value="customer">Ditanggung Customer</option>
+                                <option value="Ditanggung Perusahaan">Ditanggung Perusahaan</option>
+                                <option value="Ditanggung Customer">Ditanggung Customer</option>
                             </select>
                         </div>
                     </div>
@@ -463,6 +458,13 @@
                         <button onclick="fetchDashboardData()" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 text-sm font-bold py-2 px-4 rounded-lg shadow-sm transition"><i class="fas fa-sync-alt mr-2 text-teal-500"></i> Refresh Data</button>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6 flex flex-wrap gap-4 shadow-sm">
+                        <div class="w-full md:w-56 flex-shrink-0">
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Pencarian Cepat</label>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                <input type="text" id="histSearch" oninput="debounceSearch(() => renderHistoryTable(true))" class="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white text-sm" placeholder="Cari Dokumen/Toko...">
+                            </div>
+                        </div>
                         <div class="w-40 flex-shrink-0"><label class="block text-xs font-bold text-gray-700 mb-1.5">Filter Status</label><select id="histFilterStatus" onchange="renderHistoryTable(true)" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-sm font-bold text-gray-700"><option value="ALL">Semua Status</option><option value="Done">Telah Cair (Done)</option><option value="Submitted">Sedang Diproses</option></select></div>
                         <div id="histFilterOscContainer" class="w-48 flex-shrink-0 hidden relative"><label class="block text-xs font-bold text-gray-700 mb-1.5">OSC Area</label><button type="button" onclick="toggleMultiSelect('histOscDropdown')" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-sm text-left truncate shadow-sm"><span class="truncate block whitespace-nowrap">-- Semua --</span></button><div id="histOscDropdown" class="multiselect-dropdown p-2 text-sm shadow-xl border-gray-200"></div></div>
                         <div id="histFilterDepotContainer" class="w-48 flex-shrink-0 hidden relative"><label class="block text-xs font-bold text-gray-700 mb-1.5">Kode Depot</label><button type="button" onclick="toggleMultiSelect('histDepotDropdown')" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-sm text-left truncate shadow-sm"><span class="truncate block whitespace-nowrap">-- Semua --</span></button><div id="histDepotDropdown" class="multiselect-dropdown p-2 text-sm shadow-xl border-gray-200"></div></div>
@@ -599,9 +601,7 @@
                 <button onclick="document.getElementById('masterDepotModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
             </div>
             <div class="p-6 overflow-auto flex-1 bg-white">
-                <div id="masterDepotList" class="space-y-3">
-                    <!-- Buttons rendered here -->
-                </div>
+                <div id="masterDepotList" class="space-y-3"></div>
             </div>
         </div>
     </div>
@@ -677,11 +677,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydUriHtb_gkNgARdAj5sk0gdYGQz-do6qa1oC9riUsefeWWEHLy3uRs96NfjfierjOfQ/exec";
         let debounceTimer; 
-        function debounceSearch(callback, delay = 300) { 
-            clearTimeout(debounceTimer); 
-            debounceTimer = setTimeout(callback, delay); 
-        }
-
+        function debounceSearch(callback, delay = 300) { clearTimeout(debounceTimer); debounceTimer = setTimeout(callback, delay); }
         function triggerFilterCallback(fnKey) {
             if(fnKey === 'release') renderWorkflowTable('release');
             else if(fnKey === 'claim') renderWorkflowTable('claim');
@@ -692,54 +688,25 @@
 
         function showActionResult(title, successList, failList, actionType, batchNum = null) {
             document.getElementById('actionResultTitle').innerHTML = `<i class="fas fa-info-circle text-blue-500 mr-2"></i>` + title;
-            
             let isReject = actionType === 'reject';
             let successLabel = isReject ? 'Berhasil Ditolak' : 'Berhasil';
             let successColor = isReject ? 'text-red-700' : 'text-green-700';
             let successBg = isReject ? 'bg-red-50 border-red-200 text-red-600' : 'bg-green-50 border-green-200 text-green-600';
-            
             let statsHtml = `<div class="flex-1 ${successBg} p-3 rounded-xl border"><span class="block text-[10px] uppercase font-bold mb-1">${successLabel}</span><span class="text-2xl font-black ${successColor}">${successList.length}</span></div>`;
-            
-            if (failList && failList.length > 0) {
-                statsHtml += `<div class="flex-1 bg-gray-50 border border-gray-200 p-3 rounded-xl"><span class="block text-[10px] uppercase font-bold text-gray-600 mb-1">Gagal Diproses</span><span class="text-2xl font-black text-gray-700">${failList.length}</span></div>`;
-            }
+            if (failList && failList.length > 0) { statsHtml += `<div class="flex-1 bg-gray-50 border border-gray-200 p-3 rounded-xl"><span class="block text-[10px] uppercase font-bold text-gray-600 mb-1">Gagal Diproses</span><span class="text-2xl font-black text-gray-700">${failList.length}</span></div>`; }
             document.getElementById('actionResultStats').innerHTML = statsHtml;
-            
             let tbody = '';
             successList.forEach(s => { 
                 let rowBgClass = isReject ? 'bg-red-50/30 hover:bg-red-50' : 'hover:bg-gray-50';
                 let docColor = isReject ? 'text-red-700' : 'text-blue-700';
                 let badgeHtml = isReject ? `<span class="bg-red-100 text-red-800 px-2 py-1 rounded text-[10px] font-bold">Ditolak (Kembali)</span>` : `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-[10px] font-bold">Sukses</span>`;
                 let valHtml = isReject ? `<span class="text-xs text-red-600 font-bold">Batch Prev:<br>${s.prevBatch || '-'}</span>` : `<span class="text-indigo-600 font-black">Rp ${Number(s.reward||0).toLocaleString('id-ID')}</span>`;
-
-                tbody += `<tr class="${rowBgClass} transition-colors border-b border-gray-100">
-                    <td class="p-3 font-bold ${docColor}">${s.noDoc}</td>
-                    <td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeCamp||"-"}</span><br><span class="text-gray-500">${s.namaCamp||"-"}</span></td>
-                    <td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeToko||"-"}</span><br><span class="text-gray-500">${s.namaToko||"-"}</span></td>
-                    <td class="p-3 text-right border-l border-gray-100">${valHtml}</td>
-                    <td class="p-3 text-center">${badgeHtml}</td>
-                </tr>`; 
+                tbody += `<tr class="${rowBgClass} transition-colors border-b border-gray-100"><td class="p-3 font-bold ${docColor}">${s.noDoc}</td><td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeCamp||"-"}</span><br><span class="text-gray-500">${s.namaCamp||"-"}</span></td><td class="p-3 text-xs"><span class="font-bold text-gray-800">${s.kodeToko||"-"}</span><br><span class="text-gray-500">${s.namaToko||"-"}</span></td><td class="p-3 text-right border-l border-gray-100">${valHtml}</td><td class="p-3 text-center">${badgeHtml}</td></tr>`; 
             });
-            if (failList) failList.forEach(f => { 
-                tbody += `<tr class="bg-gray-50/50 hover:bg-gray-100 border-b border-gray-100">
-                    <td class="p-3 font-bold text-gray-600">${f.noDoc}</td>
-                    <td class="p-3 text-xs">-</td>
-                    <td class="p-3 text-xs font-medium text-gray-800">${f.toko||f.namaToko||"-"}</td>
-                    <td class="p-3 text-right">-</td>
-                    <td class="p-3 text-center"><span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">Gagal: ${f.reason}</span></td>
-                </tr>`; 
-            });
-            
+            if (failList) failList.forEach(f => { tbody += `<tr class="bg-gray-50/50 hover:bg-gray-100 border-b border-gray-100"><td class="p-3 font-bold text-gray-600">${f.noDoc}</td><td class="p-3 text-xs">-</td><td class="p-3 text-xs font-medium text-gray-800">${f.toko||f.namaToko||"-"}</td><td class="p-3 text-right">-</td><td class="p-3 text-center"><span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">Gagal: ${f.reason}</span></td></tr>`; });
             document.getElementById('actionResultBody').innerHTML = tbody; 
-            
             let batchContainer = document.getElementById('actionBatchContainer');
-            if (batchNum && batchNum !== '-' && !isReject) {
-                batchContainer.classList.remove('hidden');
-                document.getElementById('actionResultBatchNo').innerText = batchNum;
-            } else {
-                batchContainer.classList.add('hidden');
-            }
-            
+            if (batchNum && batchNum !== '-' && !isReject) { batchContainer.classList.remove('hidden'); document.getElementById('actionResultBatchNo').innerText = batchNum; } else { batchContainer.classList.add('hidden'); }
             setHiddenSafely('actionResultModal', false);
         }
 
@@ -765,8 +732,11 @@
             else if (cS === "released") { statusEl.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-clock"></i> Pending (Released)</span>`; return; }
             else if (cS === "claimed") { statusEl.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-clock"></i> Pending Fin (Claimed)</span>`; return; }
 
-            let ud = String(currentUserData && currentUserData.kodeDepot ? currentUserData.kodeDepot : '0').toUpperCase(), docDc = String(db.dcCode || '').toUpperCase();
-            if (ud !== '0' && ud !== 'HO' && docDc !== ud && currentUserData && (currentUserData.sysRole || currentUserData.role || '').toLowerCase() !== 'system manager') {
+            let docDc = String(db.dcCode || '').toUpperCase();
+            let isSysMgr = currentUserData && (currentUserData.sysRole || currentUserData.role || '').toLowerCase() === 'system manager';
+            let managed = currentUserData.managedDepots ? currentUserData.managedDepots.map(x => String(x).toUpperCase()) : [];
+
+            if (!isSysMgr && !managed.includes(docDc)) {
                 statusEl.innerHTML = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-ban"></i> Beda DC (Ditolak)</span>`; return;
             }
 
@@ -775,13 +745,8 @@
             
             let cmp = globalCampaigns.find(c => c.codeCampaign === db.codeCampaign) || {}; let cst = globalCustomers.find(c => c.custCode === db.custCode) || {};
             
-            let db_ktp = String(cst.ktp || '').trim();
-            let db_npwp = String(cst.npwp || '').trim();
-            let subPajak = "-";
-            
-            if (db_ktp && db_npwp) subPajak = "Check";
-            else if (db_npwp) subPajak = "Badan";
-            else if (db_ktp) subPajak = "Pribadi";
+            let db_ktp = String(cst.ktp || '').trim(); let db_npwp = String(cst.npwp || '').trim(); let subPajak = "-";
+            if (db_ktp && db_npwp) subPajak = "Check"; else if (db_npwp) subPajak = "Badan"; else if (db_ktp) subPajak = "Pribadi";
 
             document.getElementById('singleToko').innerText = `${db.custCode} - ${normalizeName(db.custName)}`;
             document.getElementById('singleCamp').innerText = `${db.codeCampaign} - ${db.campaignName}`;
@@ -796,13 +761,9 @@
             let elSb = document.getElementById('singleSubyekPajak'); elSb.innerText = subPajak;
             elSb.className = "font-black px-2 py-0.5 rounded text-[10px] uppercase " + (subPajak === 'Badan' ? "bg-purple-100 text-purple-700" : (subPajak === 'Pribadi' ? "bg-orange-100 text-orange-700" : (subPajak==='Check'?"bg-red-500 text-white animate-pulse shadow-sm":"text-gray-800")));
 
-            document.getElementById('singleKtp').value = db_ktp; 
-            document.getElementById('singleNpwp').value = db_npwp;
-            document.getElementById('singleRek').value = cst.noRek || ''; 
-            document.getElementById('singleNamaRek').value = cst.namaRek || ''; 
-            document.getElementById('singleBank').value = cst.bank || ''; 
-            document.getElementById('singleTop').value = ''; 
-            document.getElementById('singleTotTagih').value = ''; 
+            document.getElementById('singleKtp').value = db_ktp; document.getElementById('singleNpwp').value = db_npwp;
+            document.getElementById('singleRek').value = cst.noRek || ''; document.getElementById('singleNamaRek').value = cst.namaRek || ''; document.getElementById('singleBank').value = cst.bank || ''; 
+            document.getElementById('singleTop').value = ''; document.getElementById('singleTotTagih').value = ''; 
         }
 
         function resetSingleForm() {
@@ -818,7 +779,7 @@
             const ws_data = [
                 ["FORMAT MASS UPLOAD", "", "", "", "", "", "", "", "", "", "", "", "", ""], 
                 ["No Document", "Tgl Lunas", "No KTP", "No NPWP", "No Rekening", "Nama Rekening", "Bank", "TOP", "Approval", "Bln Potong 1", "Bln Potong 2", "Bln Potong 3", "Bln Potong 4", "Total Tagihan"], 
-                ["DOC-001", "2026-04-15", "", "", "", "", "", "30", "NSM", "Jan-26", "", "", "", "1000000"]
+                ["DOC-001", "15-04-2026", "", "", "", "", "", "30", "NSM", "Jan-26", "", "", "", "1000000"]
             ];
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws_data), "Template"); XLSX.writeFile(wb, "Template_Upload_Claim.xlsx");
         }
@@ -836,45 +797,30 @@
 
         document.addEventListener('DOMContentLoaded', function() { 
             initInputGrid(); 
-            
-            // Setup Excel-Like Arrow Navigation for Input Grid
             document.getElementById('inputGridBody').addEventListener('keydown', function(e) {
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                    let cell = e.target.closest('td');
-                    let row = e.target.closest('tr');
+                    let cell = e.target.closest('td'); let row = e.target.closest('tr');
                     if (!cell || !row) return;
-                    let cIdx = cell.cellIndex;
-                    let rIdx = parseInt(row.getAttribute('data-idx'));
-                    
+                    let cIdx = cell.cellIndex; let rIdx = parseInt(row.getAttribute('data-idx'));
                     let allRows = document.querySelectorAll('.row-input');
                     let nextRow = rIdx, nextCol = cIdx;
-                    
                     if (e.key === 'ArrowUp') nextRow = Math.max(0, rIdx - 1);
                     if (e.key === 'ArrowDown') nextRow = Math.min(currentInputRows - 1, rIdx + 1);
                     if (e.key === 'ArrowLeft') nextCol = Math.max(1, cIdx - 1); 
                     if (e.key === 'ArrowRight') nextCol = Math.min(row.children.length - 1, cIdx + 1);
-                    
                     if (nextRow !== rIdx || nextCol !== cIdx) {
                         e.preventDefault(); 
-                        
                         let getValidInput = (r, c, direction) => {
                             if (!allRows[r] || !allRows[r].children[c]) return null;
                             let targetCell = allRows[r].children[c];
                             let input = targetCell.querySelector('input:not([readonly]), select');
                             if (input) return input;
-                            
-                            // If readonly, jump to the next valid column
                             if (direction === 'ArrowRight' && c < row.children.length - 1) return getValidInput(r, c + 1, direction);
                             if (direction === 'ArrowLeft' && c > 1) return getValidInput(r, c - 1, direction);
                             return null;
                         };
-
                         let targetInput = getValidInput(nextRow, nextCol, e.key);
-
-                        if (targetInput) {
-                            targetInput.focus();
-                            if (targetInput.tagName === 'INPUT') targetInput.select();
-                        }
+                        if (targetInput) { targetInput.focus(); if (targetInput.tagName === 'INPUT') targetInput.select(); }
                     }
                 }
             });
@@ -896,6 +842,21 @@
             return val;
         }
 
+        function normalizeDateUI(val) {
+            if (!val) return ""; 
+            let str = String(val).trim(); 
+            let match = str.match(/^(\d{1,2})[\/\-\.\s]+(\d{1,2})[\/\-\.\s]+(\d{2,4})$/);
+            if (match) { 
+                let d = match[1].padStart(2, '0'); let m = match[2].padStart(2, '0'); let y = match[3].length === 2 ? "20" + match[3] : match[3]; 
+                return `${d}-${m}-${y}`; 
+            }
+            let parsed = new Date(val);
+            if (!isNaN(parsed.getTime())) {
+                return String(parsed.getDate()).padStart(2, '0') + "-" + String(parsed.getMonth() + 1).padStart(2, '0') + "-" + parsed.getFullYear();
+            }
+            return str;
+        }
+
         function setHiddenSafely(id, sh) { let e = document.getElementById(id); if (e) { if (sh) e.classList.add('hidden'); else e.classList.remove('hidden'); } }
         function setDisabledSafely(id, dis) { let e = document.getElementById(id); if (e) { e.disabled = dis; if (dis) e.classList.add('bg-gray-400', 'cursor-not-allowed', 'opacity-50'); else e.classList.remove('bg-gray-400', 'cursor-not-allowed', 'opacity-50'); } }
 
@@ -913,16 +874,10 @@
             if (rb) { let sep = ss ? '.' : ''; r += sep + rb.join('.'); } r = s[1] != undefined ? r + ',' + s[1] : r; elem.value = r;
         }
 
-        // --- FETCH WRAPPER TO CATCH KICKOUTS ---
         async function fetchApp(bodyData) {
             try {
                 let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(bodyData) }).then(r => r.json());
-                if (res.status === 'kicked') {
-                    setHiddenSafely('loadingOverlay', true);
-                    alert("Sesi Anda telah berakhir karena akun digunakan di perangkat lain.");
-                    location.reload();
-                    throw new Error("Kicked");
-                }
+                if (res.status === 'kicked') { setHiddenSafely('loadingOverlay', true); alert("Sesi Anda telah berakhir karena akun digunakan di perangkat lain."); location.reload(); throw new Error("Kicked"); }
                 return res;
             } catch(e) { throw e; }
         }
@@ -973,10 +928,8 @@
         function handleLoginEnter(e) { if (e.key === 'Enter') processLogin(); }
 
         async function processLogin() {
-            let uidInput = document.getElementById('userid');
-            let pinInput = document.getElementById('pin');
-            let uid = uidInput.value.trim();
-            let pin = pinInput.value.trim();
+            let uidInput = document.getElementById('userid'); let pinInput = document.getElementById('pin');
+            let uid = uidInput.value.trim(); let pin = pinInput.value.trim();
             let errEl = document.getElementById('loginErrorText');
             
             if (!uid || !pin) { errEl.innerText = "Isi UserID dan PIN Anda!"; setHiddenSafely('loginError', false); return; }
@@ -984,9 +937,7 @@
             if (pinAttempts[uid] >= 3) { errEl.innerText = "Akun Anda diblokir (Salah PIN >3x)."; setHiddenSafely('loginError', false); return; }
 
             setHiddenSafely('loginError', true); setHiddenSafely('loginLoader', false); setDisabledSafely('btnLogin', true);
-            uidInput.disabled = true;
-            pinInput.disabled = true;
-            document.getElementById('btnLoginText').innerText = "Memverifikasi...";
+            uidInput.disabled = true; pinInput.disabled = true; document.getElementById('btnLoginText').innerText = "Memverifikasi...";
 
             try {
                 let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'login', userid: uid, pin: pin }) }).then(r => r.json());
@@ -1008,37 +959,21 @@
                 } else {
                     pinAttempts[uid]++; let aL = 3 - pinAttempts[uid];
                     if (pinAttempts[uid] >= 3) errEl.innerText = "Akun diblokir karena salah PIN lebih dari 3x."; else errEl.innerText = res.message || `PIN Salah. Sisa: ${aL}`;
-                    setHiddenSafely('loginError', false);
-                    throw new Error("Invalid Login");
+                    setHiddenSafely('loginError', false); throw new Error("Invalid Login");
                 }
             } catch (e) {
                 if (e.customMessage) { errEl.innerText = e.customMessage; setHiddenSafely('loginError', false); }
                 else if (e.message !== "Invalid Login") { errEl.innerText = "Error server. Cek URL & Deploy Backend."; setHiddenSafely('loginError', false); }
-                
-                uidInput.disabled = false;
-                pinInput.disabled = false;
-                uidInput.value = '';
-                pinInput.value = '';
-                uidInput.focus();
-            } finally { 
-                setHiddenSafely('loginLoader', true); setDisabledSafely('btnLogin', false); document.getElementById('btnLoginText').innerText = "Masuk ke Portal"; 
-            }
+                uidInput.disabled = false; pinInput.disabled = false; uidInput.value = ''; pinInput.value = ''; uidInput.focus();
+            } finally { setHiddenSafely('loginLoader', true); setDisabledSafely('btnLogin', false); document.getElementById('btnLoginText').innerText = "Masuk ke Portal"; }
         }
 
         function applyRoleBasedUI(user) {
             let sys = (user.sysRole || user.role || '').toLowerCase();
             let iSM = sys === 'system manager', iSP = sys === 'supervisor', iOS = sys === 'osc', uA = user.auth || {};
 
-            let aU = iSM || parseAuthBool(uA.j),
-                aR = iSM || parseAuthBool(uA.k),
-                aP = iSM || parseAuthBool(uA.l),
-                aA = iSM || parseAuthBool(uA.m) || parseAuthBool(uA.d),
-                aK = iSM || iSP || parseAuthBool(uA.n), 
-                aL = iSM || iSP || iOS,
-                aMD = iSM || parseAuthBool(uA.p); 
-
+            let aU = iSM || parseAuthBool(uA.j), aR = iSM || parseAuthBool(uA.k), aP = iSM || parseAuthBool(uA.l), aA = iSM || parseAuthBool(uA.m) || parseAuthBool(uA.d), aK = iSM || iSP || parseAuthBool(uA.n), aL = iSM || iSP || iOS, aMD = iSM || parseAuthBool(uA.p); 
             setHiddenSafely('menuUpload', !aU); setHiddenSafely('menuRelease', !aR); setHiddenSafely('menuProcess', !aP); setHiddenSafely('menuAnalytics', !aA); setHiddenSafely('menuKelolaAkses', !aK); setHiddenSafely('menuLogActivity', !aL); setHiddenSafely('menuMasterDepot', !aMD);
-            setHiddenSafely('alertNoUpload', aU);
 
             if (iSP || iSM) { ['rel', 'cf', 'clr', 'hist', 'sum'].forEach(p => { setHiddenSafely(p + 'FilterDepotContainer', false); if (p !== 'rel' && p !== 'cf' && p !== 'clr') setHiddenSafely(p + 'FilterOscContainer', false); }); setHiddenSafely('dropBtnReqPin', true); setHiddenSafely('editRoleContainer', false); } 
             else if (iOS) { ['rel', 'cf', 'clr', 'hist', 'sum'].forEach(p => setHiddenSafely(p + 'FilterDepotContainer', false)); setHiddenSafely('dropBtnReqPin', false); } 
@@ -1057,23 +992,15 @@
         }
         
         function openMasterDepot() {
-            let listContainer = document.getElementById('masterDepotList');
-            listContainer.innerHTML = '';
-            
-            if (!globalDepotList || globalDepotList.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-gray-500 font-medium py-4">Tidak ada data master depot yang tersedia.</p>';
-            } else {
-                globalDepotList.forEach(d => {
-                    let btn = document.createElement('button');
-                    btn.className = "w-full text-left p-4 bg-gray-50 hover:bg-yellow-50 border border-gray-200 hover:border-yellow-300 rounded-xl transition flex justify-between items-center group shadow-sm";
-                    btn.innerHTML = `<span class="font-bold text-gray-700 group-hover:text-yellow-700">${d.kode} - ${d.nama}</span> <i class="fas fa-external-link-alt text-gray-400 group-hover:text-yellow-600"></i>`;
-                    btn.onclick = () => {
-                        if(d.link) window.open(d.link, '_blank');
-                        else showNotification("Link belum disetting untuk depot ini.", "warning");
-                    };
-                    listContainer.appendChild(btn);
-                });
-            }
+            let listContainer = document.getElementById('masterDepotList'); listContainer.innerHTML = '';
+            if (!globalDepotList || globalDepotList.length === 0) { showNotification("Tidak ada data master depot yang tersedia untuk akun Anda.", "warning"); return; } 
+            if (globalDepotList.length === 1) { let d = globalDepotList[0]; if (d.link) window.open(d.link, '_blank'); else showNotification("Link belum disetting untuk depot ini.", "warning"); return; }
+            globalDepotList.forEach(d => {
+                let btn = document.createElement('button'); btn.className = "w-full text-left p-4 bg-gray-50 hover:bg-yellow-50 border border-gray-200 hover:border-yellow-300 rounded-xl transition flex justify-between items-center group shadow-sm";
+                btn.innerHTML = `<span class="font-bold text-gray-700 group-hover:text-yellow-700">${d.kode} - ${d.nama}</span> <i class="fas fa-external-link-alt text-gray-400 group-hover:text-yellow-600"></i>`;
+                btn.onclick = () => { if(d.link) window.open(d.link, '_blank'); else showNotification("Link belum disetting untuk depot ini.", "warning"); };
+                listContainer.appendChild(btn);
+            });
             setHiddenSafely('masterDepotModal', false);
         }
 
@@ -1081,8 +1008,7 @@
         async function submitProfileUpdate() {
             let d = { alamat: document.getElementById('p_alamat').value, kepalaDepot: document.getElementById('p_kepala').value, kepalaAdmin: document.getElementById('p_adminHead').value, sales: document.getElementById('p_k_sales').value, admin: document.getElementById('p_k_admin').value, fg: document.getElementById('p_k_fg').value, pcc: document.getElementById('p_k_pcc').value, teknisi: document.getElementById('p_k_tek').value, driver: document.getElementById('p_k_drv').value, lainnya: document.getElementById('p_k_oth').value };
             setHiddenSafely('loadReqProfile', false); setDisabledSafely('btnReqProfile', true);
-            try {
-                let res = await fetchApp({ action: 'submitProfileUpdate', sysRole: currentUserData.sysRole, kodeDepot: currentUserData.kodeDepot, namaDepot: currentUserData.depot, requesterId: currentUserData.userId, changes: d });
+            try { let res = await fetchApp({ action: 'submitProfileUpdate', sysRole: currentUserData.sysRole, kodeDepot: currentUserData.kodeDepot, namaDepot: currentUserData.depot, requesterId: currentUserData.userId, changes: d });
                 if (res.status === 'success') { showNotification("Pengajuan perubahan dikirim.", "success"); logActivity('Submit request perubahan profil: ' + currentUserData.depot); setHiddenSafely('profileEditModal', true); } else { showNotification(res.message, "error"); }
             } catch (e) { showNotification("Gagal mengirim request.", "error"); } finally { setHiddenSafely('loadReqProfile', true); setDisabledSafely('btnReqProfile', false); }
         }
@@ -1102,78 +1028,29 @@
             let tbody = document.getElementById('inputGridBody'); if(!tbody) return; let html = '';
             for (let i = 0; i < 20; i++) {
                 let display = i < currentInputRows ? '' : 'style="display:none;"';
-                html += `<tr class="border-b border-gray-200 row-input transition-colors" ${display} data-idx="${i}">
-                    <td class="text-center text-gray-400 bg-gray-50 border-r border-gray-200 w-10">${i + 1}</td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input font-bold text-blue-700 uppercase" placeholder="DOC-..." name="noDoc"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="YYYY-MM-DD" name="tglLunas"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="ktp"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="npwp"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="noRekening"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="namaRekening"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="bank"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="number" class="excel-input text-center" placeholder="Hari" name="top"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center" placeholder="Opsional" name="approval"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase text-green-700 font-bold" placeholder="MMM-YY" name="bln1"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln2"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln3"></td>
-                    <td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln4"></td>
-                    <td class="p-0"><input type="text" class="excel-input text-right text-indigo-700 font-bold" placeholder="Rp (Wajib CN)" name="totTagih" onkeyup="formatCurrencyInput(this)"></td>
-                </tr>`;
+                html += `<tr class="border-b border-gray-200 row-input transition-colors" ${display} data-idx="${i}"><td class="text-center text-gray-400 bg-gray-50 border-r border-gray-200 w-10">${i + 1}</td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input font-bold text-blue-700 uppercase" placeholder="DOC-..." name="noDoc"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="DD-MM-YYYY" name="tglLunas"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="ktp"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700 font-bold bg-gray-100 cursor-not-allowed" readonly placeholder="Auto DB" name="npwp"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="noRekening"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="namaRekening"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-gray-700" placeholder="Wajib (Transfer)" name="bank"></td><td class="p-0 border-r border-gray-200"><input type="number" class="excel-input text-center" placeholder="Hari" name="top"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center" placeholder="Opsional" name="approval"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase text-green-700 font-bold" placeholder="MMM-YY" name="bln1"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln2"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln3"></td><td class="p-0 border-r border-gray-200"><input type="text" class="excel-input text-center uppercase" placeholder="Opt" name="bln4"></td><td class="p-0"><input type="text" class="excel-input text-right text-indigo-700 font-bold" placeholder="Rp (Wajib CN)" name="totTagih" onkeyup="formatCurrencyInput(this)"></td></tr>`;
             }
             tbody.innerHTML = html; updateRowCountDisplay();
         }
 
         document.getElementById('inputGridBody').addEventListener('paste', function(e) {
-            e.preventDefault();
-            let clipboardData = e.clipboardData || window.clipboardData;
-            let pastedData = clipboardData.getData('Text');
-            if(!pastedData) return;
-            
-            let rows = pastedData.split(/\r\n|\n|\r/);
-            if (rows.length > 0 && rows[rows.length - 1] === '') {
-                rows.pop(); 
-            }
-            
-            let targetInput = e.target;
-            if (!targetInput.classList.contains('excel-input')) return;
-            
-            let td = targetInput.closest('td');
-            let tr = targetInput.closest('tr');
-            
-            let startRowIdx = parseInt(tr.getAttribute('data-idx'));
-            let inputsInRow = Array.from(tr.querySelectorAll('.excel-input'));
-            let startColIdx = inputsInRow.indexOf(targetInput);
-            
-            let tbody = document.getElementById('inputGridBody');
-            let allTrs = tbody.querySelectorAll('.row-input');
-            let pasteCount = 0;
-            
+            e.preventDefault(); let clipboardData = e.clipboardData || window.clipboardData; let pastedData = clipboardData.getData('Text'); if(!pastedData) return;
+            let rows = pastedData.split(/\r\n|\n|\r/); if (rows.length > 0 && rows[rows.length - 1] === '') { rows.pop(); }
+            let targetInput = e.target; if (!targetInput.classList.contains('excel-input')) return;
+            let tr = targetInput.closest('tr'); let startRowIdx = parseInt(tr.getAttribute('data-idx'));
+            let inputsInRow = Array.from(tr.querySelectorAll('.excel-input')); let startColIdx = inputsInRow.indexOf(targetInput);
+            let allTrs = document.getElementById('inputGridBody').querySelectorAll('.row-input'); let pasteCount = 0;
             for (let i = 0; i < rows.length; i++) {
-                if (startRowIdx + pasteCount >= 20) break;
-                let cells = rows[i].split('\t');
-                
-                let rowTr = allTrs[startRowIdx + pasteCount];
-                rowTr.style.display = ''; 
+                if (startRowIdx + pasteCount >= 20) break; let cells = rows[i].split('\t');
+                let rowTr = allTrs[startRowIdx + pasteCount]; rowTr.style.display = ''; 
                 let inputs = rowTr.querySelectorAll('.excel-input');
-                
                 for (let j = 0; j < cells.length; j++) {
                     let targetColIdx = startColIdx + j;
-                    if (targetColIdx < inputs.length) {
-                        let inputEl = inputs[targetColIdx];
-                        if (!inputEl.readOnly) {
-                            inputEl.value = cells[j].trim();
-                            if (inputEl.name === 'totTagih') {
-                                formatCurrencyInput(inputEl);
-                            }
-                        }
-                    }
+                    if (targetColIdx < inputs.length) { let inputEl = inputs[targetColIdx]; if (!inputEl.readOnly) { inputEl.value = cells[j].trim(); if (inputEl.name === 'totTagih') { formatCurrencyInput(inputEl); } } }
                 }
                 pasteCount++;
             }
-            
-            if (startRowIdx + pasteCount > currentInputRows) {
-                currentInputRows = startRowIdx + pasteCount;
-            }
+            if (startRowIdx + pasteCount > currentInputRows) { currentInputRows = startRowIdx + pasteCount; }
             updateRowCountDisplay();
         });
 
@@ -1185,7 +1062,8 @@
 
         function previewUploadData(mode) {
             massUploadDataValid = []; hasMasterUpdateFlag = false; let v = 0;
-            let ud = String(currentUserData && currentUserData.kodeDepot ? currentUserData.kodeDepot : '0').toUpperCase();
+            let isSysMgr = currentUserData && (currentUserData.sysRole || currentUserData.role || '').toLowerCase() === 'system manager';
+            let managed = currentUserData.managedDepots ? currentUserData.managedDepots.map(x => String(x).toUpperCase()) : [];
             let rowsHtml = '';
 
             let processRow = function(inputData) {
@@ -1194,19 +1072,20 @@
                 let trInfo = ""; let isValid = true; let docDc = db ? String(db.dcCode || '').toUpperCase() : '';
 
                 if (!db) { isValid = false; trInfo = `<span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-exclamation-triangle"></i> Tdk di DB</span>`; } 
-                else if (ud !== '0' && ud !== 'HO' && docDc !== ud && currentUserData && (currentUserData.sysRole || currentUserData.role || '').toLowerCase() !== 'system manager') { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-ban"></i> Beda DC</span>`; } 
+                else if (!isSysMgr && !managed.includes(docDc)) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-ban"></i> Beda DC</span>`; } 
                 else if (String(db.status || "").trim().toLowerCase() !== "not yet" && String(db.status || "").trim() !== "") { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold"><i class="fas fa-ban"></i> Duplikat</span>`; } 
                 else {
-                    let cmp = globalCampaigns.find(c => c.codeCampaign === db.codeCampaign) || {}; 
-                    let cst = globalCustomers.find(c => c.custCode === db.custCode) || {};
-
+                    let cmp = globalCampaigns.find(c => c.codeCampaign === db.codeCampaign) || {}; let cst = globalCustomers.find(c => c.custCode === db.custCode) || {};
                     let db_ktp = String(cst.ktp || '').trim(), db_npwp = String(cst.npwp || '').trim(), final_subyekpajak = "";
-
                     if (db_ktp && db_npwp) { final_subyekpajak = "Check"; isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">KTP & NPWP Ganda (Check)</span>`; } 
                     else if (db_npwp) { final_subyekpajak = "Badan"; } else if (db_ktp) { final_subyekpajak = "Perorangan"; } 
                     else { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">KTP/NPWP Kosong (Update DB)</span>`; }
 
-                    let ex_norek = inputData.norek, ex_namarek = inputData.namarek, ex_bank = inputData.bank, in_top = parseFloat(inputData.top), in_approval = inputData.approval, in_bln1 = normalizeMonthUI(inputData.bln1), in_bln2 = normalizeMonthUI(inputData.bln2), in_bln3 = normalizeMonthUI(inputData.bln3), in_bln4 = normalizeMonthUI(inputData.bln4), in_totTagih = inputData.totTagih ? inputData.totTagih.replace(/[^,\d]/g, '') : '', in_tglLunas = inputData.tglLunas;
+                    let ex_norek = inputData.norek, ex_namarek = inputData.namarek, ex_bank = inputData.bank, in_top = parseFloat(inputData.top), in_approval = inputData.approval, in_bln1 = normalizeMonthUI(inputData.bln1), in_bln2 = normalizeMonthUI(inputData.bln2), in_bln3 = normalizeMonthUI(inputData.bln3), in_bln4 = normalizeMonthUI(inputData.bln4), in_tglLunas = normalizeDateUI(inputData.tglLunas);
+                    
+                    // PERBAIKAN: Parsing Total Tagihan secara ketat menjadi Number (Jika kosong/0 akan dibaca sebagai 0)
+                    let in_totTagih_str = inputData.totTagih ? String(inputData.totTagih).replace(/[^,\d]/g, '') : '';
+                    let numTotTagih = in_totTagih_str ? Number(in_totTagih_str) : 0;
 
                     let final_norek = ex_norek || String(cst.noRek || '').trim(), final_namarec = ex_namarek || String(cst.namaRek || '').trim(), final_bank = ex_bank || String(cst.bank || '').trim(), final_top = in_top, master_top = parseFloat(cst.top || 0);
 
@@ -1214,24 +1093,24 @@
                     if (isValid && (isNaN(in_top) || in_top <= 0)) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">TOP Wajib Diisi</span>`; }
                     if (isValid && final_top > master_top && !in_approval) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Approval Wajib (TOP > Master)</span>`; }
                     
-                    if (isValid && cmp.jenisCb === 'Transfer') { if (!final_norek || !final_namarec || !final_bank) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Rekening Wajib Ada</span>`; } } 
-                    else if (isValid && cmp.jenisCb === 'CN') { if (!in_bln1 || !in_totTagih) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Bln 1 & Tot Tagihan Wajib (CN)</span>`; } }
+                    if (isValid && cmp.jenisCb === 'Transfer') { 
+                        if (!final_norek || !final_namarec || !final_bank) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Rekening Wajib Ada</span>`; } 
+                    } 
+                    // PERBAIKAN: Jika tipe CN, Total Tagihan tidak boleh <= 0
+                    else if (isValid && cmp.jenisCb === 'CN') { 
+                        if (!in_bln1 || numTotTagih <= 0) { isValid = false; trInfo = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded shadow-sm font-bold">Bln 1 & Tot Tagihan (>0) Wajib (CN)</span>`; } 
+                    }
 
                     if (isValid) {
                         let isChangeRek = (ex_norek && ex_norek !== String(cst.noRek || '').trim()) || (ex_namarek && ex_namarek !== String(cst.namaRek || '').trim()) || (ex_bank && ex_bank !== String(cst.bank || '').trim());
                         if(isChangeRek) { trInfo = `<span class="bg-red-500 text-white px-2 py-0.5 rounded font-black text-[9px] animate-pulse shadow-sm">⚠️ Update Master Rek</span>`; hasMasterUpdateFlag = true; } 
                         else { trInfo = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold shadow-sm">Valid</span>`; }
 
-                        massUploadDataValid.push({ noDoc: nd, dcCode: db.dcCode, depotName: normalizeName(db.depotName), codeCampaign: db.codeCampaign, campaignName: db.campaignName, custCode: db.custCode, custName: normalizeName(db.custName), netValue: db.netValue, volume: db.volume, cbNet: db.cbNet, periodStart: cmp.periodStart, campaignEnd: cmp.periodEnd, npwp: db_npwp, ktp: db_ktp, statusPajakCust: final_subyekpajak, tglLunas: in_tglLunas, top: final_top, approval: in_approval, blnTagih1: in_bln1, blnTagih2: in_bln2, blnTagih3: in_bln3, blnTagih4: in_bln4, totTagih: in_totTagih, subyekPajak: final_subyekpajak, statusPajakCampaign: cmp.statusPajak, jenisCashback: cmp.jenisCb, noRekening: final_norek, pemilikRekening: final_namarec, bankCust: final_bank }); v++;
+                        // PERBAIKAN: Mengirimkan numTotTagih (0 atau nilai asli) ke property totTagih
+                        massUploadDataValid.push({ noDoc: nd, dcCode: db.dcCode, depotName: normalizeName(db.depotName), codeCampaign: db.codeCampaign, campaignName: db.campaignName, custCode: db.custCode, custName: normalizeName(db.custName), netValue: db.netValue, volume: db.volume, cbNet: db.cbNet, periodStart: cmp.periodStart, campaignEnd: cmp.periodEnd, npwp: db_npwp, ktp: db_ktp, statusPajakCust: final_subyekpajak, tglLunas: in_tglLunas, top: final_top, approval: in_approval, blnTagih1: in_bln1, blnTagih2: in_bln2, blnTagih3: in_bln3, blnTagih4: in_bln4, totTagih: numTotTagih, subyekPajak: final_subyekpajak, statusPajakCampaign: cmp.statusPajak, jenisCashback: cmp.jenisCb, noRekening: final_norek, pemilikRekening: final_namarec, bankCust: final_bank }); v++;
 
-                        rowsHtml += `<tr class="hover:bg-blue-50 transition-colors border-b border-gray-100">
-                            <td class="p-3 text-center"><input type="checkbox" class="cb-upload w-4 h-4 text-blue-600 rounded focus:ring-blue-500" value="${nd}" checked onchange="updateUploadCount()"></td>
-                            <td class="p-3 text-center">${trInfo}</td><td class="p-3 font-black text-blue-700">${nd}</td><td class="p-3 font-semibold text-gray-500">${db.custCode || '-'}</td>
-                            <td class="p-3 font-bold text-gray-800">${normalizeName(db.custName)}</td><td class="p-3 font-semibold text-gray-500">${db.codeCampaign || '-'}</td>
-                            <td class="p-3 max-w-[150px] truncate" title="${db.campaignName}">${db.campaignName || '-'}</td><td class="p-3 text-right font-black text-red-600">Rp ${Number(db.cbNet || 0).toLocaleString('id-ID')}</td>
-                            <td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_norek || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_namarec || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_bank || '-'}</td>
-                            <td class="p-3 text-gray-700">${db_ktp || '-'}</td><td class="p-3 text-gray-700">${db_npwp || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${final_subyekpajak || '-'}</td><td class="p-3 text-center font-black">${final_top || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${in_approval || '-'}</td><td class="p-3 text-center font-bold">${cmp.jenisCb || '-'}</td><td class="p-3 text-center font-bold text-green-700">${[in_bln1,in_bln2,in_bln3,in_bln4].filter(Boolean).join(', ') || '-'}</td><td class="p-3 text-right font-bold text-indigo-700">Rp ${Number(in_totTagih || 0).toLocaleString('id-ID')}</td>
-                        </tr>`;
+                        // PERBAIKAN: Menampilkan nilai murni di tabel preview
+                        rowsHtml += `<tr class="hover:bg-blue-50 transition-colors border-b border-gray-100"><td class="p-3 text-center"><input type="checkbox" class="cb-upload w-4 h-4 text-blue-600 rounded focus:ring-blue-500" value="${nd}" checked onchange="updateUploadCount()"></td><td class="p-3 text-center">${trInfo}</td><td class="p-3 font-black text-blue-700">${nd}</td><td class="p-3 font-semibold text-gray-500">${db.custCode || '-'}</td><td class="p-3 font-bold text-gray-800">${normalizeName(db.custName)}</td><td class="p-3 font-semibold text-gray-500">${db.codeCampaign || '-'}</td><td class="p-3 max-w-[150px] truncate" title="${db.campaignName}">${db.campaignName || '-'}</td><td class="p-3 text-right font-black text-red-600">Rp ${Number(db.cbNet || 0).toLocaleString('id-ID')}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_norek || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_namarec || '-'}</td><td class="p-3 font-medium text-gray-700 ${isChangeRek ? 'bg-orange-50 text-orange-700' : ''}">${final_bank || '-'}</td><td class="p-3 text-gray-700">${db_ktp || '-'}</td><td class="p-3 text-gray-700">${db_npwp || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${final_subyekpajak || '-'}</td><td class="p-3 text-center font-black">${final_top || '-'}</td><td class="p-3 text-center font-bold text-gray-700">${in_approval || '-'}</td><td class="p-3 text-center font-bold">${cmp.jenisCb || '-'}</td><td class="p-3 text-center font-bold text-green-700">${[in_bln1,in_bln2,in_bln3,in_bln4].filter(Boolean).join(', ') || '-'}</td><td class="p-3 text-right font-bold text-indigo-700">Rp ${numTotTagih.toLocaleString('id-ID')}</td></tr>`;
                     }
                 }
                 if (!isValid) { rowsHtml += `<tr class="bg-red-50/50 opacity-80 border-b border-red-100"><td class="p-3 text-center"><i class="fas fa-times text-red-400"></i></td><td class="p-3 text-center">${trInfo}</td><td class="p-3 font-bold text-gray-800">${nd}</td><td colspan="16" class="p-3 text-red-500 font-medium italic">Data tidak valid dan diabaikan.</td></tr>`; }
@@ -1272,18 +1151,14 @@
                     let successDetails = dataWithBatch.filter(d => succDocs.includes(d.noDoc.toUpperCase())).map(d => ({
                         noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.custCode, namaToko: d.custName, reward: d.cbNet || d.totTagih
                     }));
-                    
                     logActivity(`Claim Upload Web: ${res.summary?.successCount || dataWithBatch.length} dokumen. No Batch: ${batchNum}`); 
                     showActionResult("Laporan Eksekusi Upload Data", successDetails, [], "Upload", batchNum);
                     resetInputGrid(); cancelPreview(); setHiddenSafely('uploadModuleTabs', false);
-                } else {
-                    showNotification(res.message, "error");
-                }
+                } else { showNotification(res.message, "error"); }
             } catch (e) { showNotification("Terjadi kesalahan saat upload.", "error"); resetInputGrid(); cancelPreview(); setHiddenSafely('uploadModuleTabs', false); } 
             finally { setHiddenSafely('submitLoaderUpload', true); }
         }
 
-        // WORKFLOW FETCH & RENDER
         function toggleAllWorkflow(src, cbClass, btnId, countId) { document.querySelectorAll('.' + cbClass).forEach(c => c.checked = src.checked); updateWorkflowCount(cbClass, btnId, countId); }
         function updateWorkflowCount(cbClass, btnId, countId) { let n = document.querySelectorAll('.' + cbClass + ':checked').length; document.getElementById(countId).innerText = n; setDisabledSafely(btnId, n === 0 || (btnId === 'btnSubmitClearing' && !document.getElementById('tglClearingInput').value)); }
         function validateClearingBtn() { let n = document.querySelectorAll('.cb-clr:checked').length; let d = document.getElementById('tglClearingInput').value; setDisabledSafely('btnSubmitClearing', n === 0 || !d); }
@@ -1299,17 +1174,13 @@
 
         function popWorkflowFilters() {
             let dR = new Set(), cR = new Set(), dC = new Set(), cC = new Set(), dCl = new Set(), cCl = new Set();
-            
             globalReleaseData.forEach(r => { dR.add(r.depot); cR.add(r.codeCampaign + " - " + r.campaignName); }); 
             globalClaimFinData.forEach(r => { dC.add(r.depot); cC.add(r.codeCampaign + " - " + r.campaignName); }); 
             globalClearingData.forEach(c => { dCl.add(c.depot); cCl.add(c.codeCampaign + " - " + c.campaignName); });
-            
             if (document.getElementById('relDepotDropdown')) document.getElementById('relDepotDropdown').innerHTML = buildMultiselectHTML(Array.from(dR).map(x => ({ label: x, value: x })), true, 'relDepotDropdown', "renderWorkflowTable('release')");
             if (document.getElementById('relCampDropdown')) document.getElementById('relCampDropdown').innerHTML = buildMultiselectHTML(Array.from(cR).map(x => ({ label: x, value: x })), true, 'relCampDropdown', "renderWorkflowTable('release')");
-            
             if (document.getElementById('cfDepotDropdown')) document.getElementById('cfDepotDropdown').innerHTML = buildMultiselectHTML(Array.from(dC).map(x => ({ label: x, value: x })), true, 'cfDepotDropdown', "renderWorkflowTable('claim')");
             if (document.getElementById('cfCampDropdown')) document.getElementById('cfCampDropdown').innerHTML = buildMultiselectHTML(Array.from(cC).map(x => ({ label: x, value: x })), true, 'cfCampDropdown', "renderWorkflowTable('claim')");
-            
             if (document.getElementById('clrDepotDropdown')) document.getElementById('clrDepotDropdown').innerHTML = buildMultiselectHTML(Array.from(dCl).map(x => ({ label: x, value: x })), true, 'clrDepotDropdown', "renderWorkflowTable('clearing')");
             if (document.getElementById('clrCampDropdown')) document.getElementById('clrCampDropdown').innerHTML = buildMultiselectHTML(Array.from(cCl).map(x => ({ label: x, value: x })), true, 'clrCampDropdown', "renderWorkflowTable('clearing')");
         }
@@ -1323,8 +1194,6 @@
             let sv = (document.getElementById(searchId)?.value || "").toLowerCase(); 
             let sd = checkMultiSelect(depotDrop) ? checkMultiSelect(depotDrop).split(', ') : []; 
             let sc = checkMultiSelect(campDrop) ? checkMultiSelect(campDrop).split(', ') : [];
-            
-            // Pajak filter khusus Clearing & Claim
             let fp = 'ALL';
             if (type === 'clearing') fp = document.getElementById('clrFilterPajak')?.value || 'ALL';
             if (type === 'claim') fp = document.getElementById('cfFilterPajak')?.value || 'ALL';
@@ -1335,14 +1204,12 @@
                 else if (type === 'claim') pBatch = r.batchRelease || '-';
                 else if (type === 'clearing') pBatch = r.batchClaim || '-';
 
-                // PERBAIKAN: Fokus filter hanya ke Status Pajak Campaign
+                let cstLocal = globalCustomers.find(c => c.custCode === r.kodeToko) || {};
                 let strPajak = String(r.statusPajakCamp || "").toLowerCase();
-
                 let matchSearch = !sv || Object.values(r).some(val => val !== null && String(val).toLowerCase().includes(sv)) || pBatch.toLowerCase().includes(sv);
                 let matchDepot = (sd.length === 0 || sd.includes(r.depot));
                 let matchCamp = (sc.length === 0 || sc.includes(r.codeCampaign + " - " + r.campaignName));
                 let matchPajak = fp === 'ALL' || strPajak.includes(fp.toLowerCase());
-
                 return matchSearch && matchDepot && matchCamp && matchPajak;
             });
 
@@ -1356,40 +1223,15 @@
                 let cst = globalCustomers.find(c => c.custCode === r.kodeToko) || {};
                 let doc = globalDocuments.find(d => String(d.noDoc).toUpperCase() === String(r.noDoc).toUpperCase()) || {};
                 
-                let valKtp = cst.ktp || r.ktp || '-';
-                let valNpwp = cst.npwp || r.npwp || '-';
-                let valTop = doc.top || r.top || '-';
-                let valLunas = doc.tglLunas || r.tglLunas || '-';
-                let valRek = cst.noRek || r.noRekening || '-';
-                let valNamaRek = cst.namaRek || r.pemilikRekening || '-';
-                let valBank = cst.bank || r.bankCust || '-';
-                let valTotTagih = Number(r.totTagih) || 0;
+                let valKtp = cst.ktp || r.ktp || '-'; let valNpwp = cst.npwp || r.npwp || '-'; let valTop = doc.top || r.top || '-'; let valLunas = doc.tglLunas || r.tglLunas || '-';
+                let valRek = cst.noRek || r.noRekening || '-'; let valNamaRek = cst.namaRek || r.pemilikRekening || '-'; let valBank = cst.bank || r.bankCust || '-';
+                
+                // PERBAIKAN: Ubah baris ini agar tidak fallback ke cbNet
+                let valTotTagih = (r.totTagih !== undefined && r.totTagih !== "") ? Number(r.totTagih) : 0;
+                
+                let valVolume = doc.volume || 0; let valNetValue = doc.netValue || 0; let valStatusPajak = r.statusPajakCamp || '-'; let valSubyekPajak = cst.subyekPajak || r.statusPajakCust || '-';
 
-                // Campaign Data
-                let valVolume = doc.volume || 0;
-                let valNetValue = doc.netValue || 0;
-                let valStatusPajak = r.statusPajakCamp || '-';
-                let valSubyekPajak = cst.subyekPajak || r.statusPajakCust || '-';
-
-                rowsHtml += `<tr class="hover:bg-blue-50 border-b transition-colors">
-                <td class="p-3.5 text-center"><input type="checkbox" value="${r.noDoc}" class="${cbCls} w-4 h-4 rounded text-blue-600 focus:ring-blue-500" onchange="updateWorkflowCount('${cbCls}', '${btnId}', '${countId}')"></td>
-                <td class="p-3.5 text-[10px] font-black text-gray-600 bg-gray-50/50 uppercase">${pBatch}</td>
-                <td class="p-3.5 text-xs text-gray-500 font-medium">${r[tglCol]}</td><td class="p-3.5 font-black text-blue-700">${r.noDoc}</td>
-                <td class="p-3.5"><span class="font-bold block text-gray-800">${r.namaToko}</span><span class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">${r.kodeToko}</span></td>
-                <td class="p-3.5"><span class="text-[10px] text-gray-500 block uppercase font-bold">${r.codeCampaign}</span><span class="text-sm font-medium whitespace-normal" title="${r.campaignName}">${r.campaignName}</span></td>
-                <td class="p-3.5 text-right font-black text-red-600">Rp ${Number(r.cbNet).toLocaleString('id-ID')}</td>
-                <td class="p-3.5 text-center"><button onclick="toggleWorkflowDetails('det-${type}-${r.noDoc}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase shadow-sm transition"><i class="fas fa-eye mr-1"></i> Details</button></td>
-                </tr>
-                <tr id="det-${type}-${r.noDoc}" class="hidden expanded-details">
-                    <td colspan="8" class="p-4 bg-gray-50">
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-id-card mr-1"></i> Identitas & Pajak</span> <span class="font-bold text-gray-800 block text-xs truncate">KTP: ${valKtp} | NPWP: ${valNpwp}</span><span class="font-bold text-gray-800 block text-xs truncate">Sbyk: ${valSubyekPajak} | Stat: ${valStatusPajak}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-money-check-alt mr-1"></i> Rekening</span> <span class="font-bold text-gray-800 block text-xs truncate">${valRek}</span><span class="font-bold text-gray-800 block text-xs truncate">${valNamaRek} (${valBank})</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-box mr-1"></i> Data Campaign</span> <span class="font-bold text-gray-800 block text-xs truncate">Vol: ${valVolume} | Val: Rp ${Number(valNetValue).toLocaleString('id-ID')}</span><span class="font-bold text-gray-800 block text-xs truncate">TOP: ${valTop} Hr | Lns: ${valLunas}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-receipt mr-1"></i> Nilai Tagihan</span> <span class="font-black text-indigo-700 block text-sm mt-1 truncate">Rp ${Number(valTotTagih).toLocaleString('id-ID')}</span></div>
-                        </div>
-                    </td>
-                </tr>`; 
+                rowsHtml += `<tr class="hover:bg-blue-50 border-b transition-colors"><td class="p-3.5 text-center"><input type="checkbox" value="${r.noDoc}" class="${cbCls} w-4 h-4 rounded text-blue-600 focus:ring-blue-500" onchange="updateWorkflowCount('${cbCls}', '${btnId}', '${countId}')"></td><td class="p-3.5 text-[10px] font-black text-gray-600 bg-gray-50/50 uppercase">${pBatch}</td><td class="p-3.5 text-xs text-gray-500 font-medium">${r[tglCol]}</td><td class="p-3.5 font-black text-blue-700">${r.noDoc}</td><td class="p-3.5"><span class="font-bold block text-gray-800">${r.namaToko}</span><span class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">${r.kodeToko}</span></td><td class="p-3.5"><span class="text-[10px] text-gray-500 block uppercase font-bold">${r.codeCampaign}</span><span class="text-sm font-medium whitespace-normal" title="${r.campaignName}">${r.campaignName}</span></td><td class="p-3.5 text-right font-black text-red-600">Rp ${Number(r.cbNet).toLocaleString('id-ID')}</td><td class="p-3.5 text-center"><button onclick="toggleWorkflowDetails('det-${type}-${r.noDoc}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase shadow-sm transition"><i class="fas fa-eye mr-1"></i> Details</button></td></tr><tr id="det-${type}-${r.noDoc}" class="hidden expanded-details"><td colspan="8" class="p-4 bg-gray-50"><div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs"><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-id-card mr-1"></i> Identitas & Pajak</span> <span class="font-bold text-gray-800 block text-xs truncate">KTP: ${valKtp} | NPWP: ${valNpwp}</span><span class="font-bold text-gray-800 block text-xs truncate">Sbyk: ${valSubyekPajak} | Stat: ${valStatusPajak}</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-money-check-alt mr-1"></i> Rekening</span> <span class="font-bold text-gray-800 block text-xs truncate">${valRek}</span><span class="font-bold text-gray-800 block text-xs truncate">${valNamaRek} (${valBank})</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-box mr-1"></i> Data Campaign</span> <span class="font-bold text-gray-800 block text-xs truncate">Vol: ${valVolume} | Val: Rp ${Number(valNetValue).toLocaleString('id-ID')}</span><span class="font-bold text-gray-800 block text-xs truncate">TOP: ${valTop} Hr | Lns: ${valLunas}</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-receipt mr-1"></i> Nilai Tagihan</span> <span class="font-black text-indigo-700 block text-sm mt-1 truncate">Rp ${Number(valTotTagih).toLocaleString('id-ID')}</span></div></div></td></tr>`; 
             });
             tb.innerHTML = rowsHtml; updateWorkflowCount(cbCls, btnId, countId);
         }
@@ -1398,48 +1240,36 @@
             let docs = []; document.querySelectorAll('.' + cbCls + ':checked').forEach(c => docs.push(c.value)); if (docs.length === 0) return;
             setDisabledSafely(btnId, true); showLoadingOverlay(actionType === 'reject' ? `Membatalkan / Tolak Data...` : `Memproses Tahap ${type.toUpperCase()}...`);
             let tglProses = ""; if (type === 'clearing' && actionType === 'approve') { let dt = document.getElementById('tglClearingInput').value; if (dt) { let pts = dt.split('-'); tglProses = pts[2] + '-' + pts[1] + '-' + pts[0]; } }
-            
             let stageCode = '00', dataSource = [];
-            if (type === 'release') { stageCode = '02'; dataSource = globalReleaseData; }
-            else if (type === 'claim') { stageCode = '03'; dataSource = globalClaimFinData; }
-            else if (type === 'clearing') { stageCode = '04'; dataSource = globalClearingData; }
-            
+            if (type === 'release') { stageCode = '02'; dataSource = globalReleaseData; } else if (type === 'claim') { stageCode = '03'; dataSource = globalClaimFinData; } else if (type === 'clearing') { stageCode = '04'; dataSource = globalClearingData; }
             let batchMapping = {};
-            if (actionType === 'approve') {
-                let batchNum = generateBatchNumber(stageCode, docs.length > 0 ? dataSource.find(d => d.noDoc === docs[0])?.codeCampaign || '00' : '00');
-                docs.forEach(noDoc => { batchMapping[noDoc] = batchNum; });
-            }
-            
+            if (actionType === 'approve') { let batchNum = generateBatchNumber(stageCode, docs.length > 0 ? dataSource.find(d => d.noDoc === docs[0])?.codeCampaign || '00' : '00'); docs.forEach(noDoc => { batchMapping[noDoc] = batchNum; }); }
             try {
                 let res = await fetchApp({ action: 'processWorkflow', docsToProcess: docs, workflowType: type, actionType: actionType, tglProses: tglProses, userData: currentUserData, batchMapping: batchMapping });
                 if (res.status === 'success') { 
-                    let uniqueBatches = [...new Set(Object.values(batchMapping))].filter(b => b !== "-");
-                    let batchNum = uniqueBatches.length > 0 ? uniqueBatches[0] : null;
-                    let batchMsg = actionType === 'approve' && batchNum ? `. No Batch: ${batchNum}` : '';
-                    
+                    let uniqueBatches = [...new Set(Object.values(batchMapping))].filter(b => b !== "-"); let batchNum = uniqueBatches.length > 0 ? uniqueBatches[0] : null; let batchMsg = actionType === 'approve' && batchNum ? `. No Batch: ${batchNum}` : '';
                     let succDocs = res.summary?.successfulDocs || [];
                     let successDetails = dataSource.filter(d => succDocs.includes(d.noDoc)).map(d => {
-                        let pBatch = '-';
-                        if (type === 'release') pBatch = d.batchUpload;
-                        else if (type === 'claim') pBatch = d.batchRelease;
-                        else if (type === 'clearing') pBatch = d.batchClaim;
-                        
-                        return {
-                            noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.kodeToko, namaToko: d.namaToko, reward: d.cbNet, prevBatch: pBatch || '-'
-                        };
+                        let pBatch = '-'; if (type === 'release') pBatch = d.batchUpload; else if (type === 'claim') pBatch = d.batchRelease; else if (type === 'clearing') pBatch = d.batchClaim;
+                        return { noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.kodeToko, namaToko: d.namaToko, reward: d.cbNet, prevBatch: pBatch || '-' };
                     });
-                    
-                    logActivity(`Workflow ${type.toUpperCase()} [${actionType}]: ${docs.length} dokumen diproses${batchMsg}`); 
-                    
-                    showActionResult(`Laporan Workflow ${type.toUpperCase()}`, successDetails, [], actionType, batchNum);
-                    fetchWorkflowData(); 
-                } else {
-                    showNotification("Gagal", "error");
-                }
+                    logActivity(`Workflow ${type.toUpperCase()} [${actionType}]: ${docs.length} dokumen diproses${batchMsg}`); showActionResult(`Laporan Workflow ${type.toUpperCase()}`, successDetails, [], actionType, batchNum); fetchWorkflowData(); 
+                } else { showNotification("Gagal", "error"); }
             } catch (e) { showNotification("Terjadi kesalahan saat memproses workflow.", "error"); fetchWorkflowData(); } finally { hideLoadingOverlay(); }
         }
 
-        // HISTORY & SUMMARY
+        function getValidYear(campaignCode) {
+            let cmp = globalCampaigns.find(c => c.codeCampaign === campaignCode);
+            if (cmp && cmp.periodStart && cmp.periodStart !== '-') { 
+                let pts = cmp.periodStart.split(/[-\/]/); 
+                if (pts.length === 3) {
+                    if (pts[0].length === 4) return pts[0]; 
+                    if (pts[2].length >= 4) return pts[2].substring(0,4); 
+                } 
+            }
+            return new Date().getFullYear().toString();
+        }
+
         async function fetchDashboardData() {
             showLoadingOverlay("Mengkalkulasi Analitik & Historikal...");
             try {
@@ -1447,14 +1277,13 @@
                 let res = await fetchApp({ action: 'getDashboardData', requesterId: currentUserData.userId, requesterRole: role, managedDepots: currentUserData.managedDepots });
                 if (res.status === 'success') { globalHistoryData = res.history || []; globalCompileData = res.compileData || []; populateDashFilters(); renderHistoryTable(true); renderSummary(); }
                 else throw new Error(res.message || "Unidentified Server Error");
-            } catch (e) { console.error('Dashboard Err:', e); showNotification(e.message || "Gagal memuat data dashboard.", "error"); renderHistoryTable(true); renderSummary(); } finally { hideLoadingOverlay(); }
+            } catch (e) { showNotification(e.message || "Gagal memuat data dashboard.", "error"); renderHistoryTable(true); renderSummary(); } finally { hideLoadingOverlay(); }
         }
 
         function populateDashFilters() {
             let o = new Set(), d = new Set(), c = new Set(), y = new Set();
-            globalHistoryData.forEach(x => { if (x.osc) o.add(x.osc); if (x.depot) d.add(x.depot); if (x.codeCampaign) c.add(x.codeCampaign + " - " + x.campaign); if (x.campaignYear && x.campaignYear !== "Lainnya") y.add(x.campaignYear); });
-            globalCompileData.forEach(x => { if (x.depotName) d.add(x.depotName); if (x.codeCampaign) c.add(x.codeCampaign + " - " + x.campaign); if (x.campaignYear && x.campaignYear !== "Lainnya") y.add(x.campaignYear); });
-
+            globalHistoryData.forEach(x => { x.validYear = getValidYear(x.codeCampaign); if (x.osc) o.add(x.osc); if (x.depot) d.add(x.depot); if (x.codeCampaign) c.add(x.codeCampaign + " - " + x.campaign); y.add(x.validYear); });
+            globalCompileData.forEach(x => { x.validYear = getValidYear(x.codeCampaign); if (x.depotName) d.add(x.depotName); if (x.codeCampaign) c.add(x.codeCampaign + " - " + x.campaign); y.add(x.validYear); });
             let oO = Array.from(o).map(x => ({ label: x, value: x })); let dO = Array.from(d).map(x => ({ label: x, value: x })); let cO = Array.from(c).map(x => ({ label: x, value: x })); let yO = Array.from(y).sort((a, b) => b - a).map(x => ({ label: x, value: x }));
             ['hist', 'sum'].forEach(p => {
                 let fn = p === 'hist' ? 'renderHistoryTable(true)' : 'renderSummary()';
@@ -1469,8 +1298,15 @@
 
         function renderHistoryTable(resetPage = false) {
             if (resetPage) histCurrentPage = 1;
+            let sv = (document.getElementById('histSearch')?.value || "").toLowerCase();
             let stat = document.getElementById('histFilterStatus').value; let so = checkMultiSelect('histOscDropdown') ? checkMultiSelect('histOscDropdown').split(', ') : []; let sd = checkMultiSelect('histDepotDropdown') ? checkMultiSelect('histDepotDropdown').split(', ') : []; let sc = checkMultiSelect('histCampDropdown') ? checkMultiSelect('histCampDropdown').split(', ') : [];
-            let filtered = globalHistoryData.filter(d => (stat === 'ALL' || (stat === 'Submitted' && d.status !== 'Done' && d.status !== 'Not Yet') || d.status === stat) && (so.length === 0 || so.includes(d.osc)) && (sd.length === 0 || sd.includes(d.depot)) && (sc.length === 0 || sc.includes(`${d.codeCampaign} - ${d.campaign}`)));
+            
+            let filtered = globalHistoryData.filter(d => {
+                let matchSearch = !sv || Object.values(d).some(val => val !== null && String(val).toLowerCase().includes(sv));
+                let matchStatus = (stat === 'ALL' || (stat === 'Submitted' && d.status !== 'Done' && d.status !== 'Not Yet') || d.status === stat);
+                let matchOsc = (so.length === 0 || so.includes(d.osc)); let matchDepot = (sd.length === 0 || sd.includes(d.depot)); let matchCamp = (sc.length === 0 || sc.includes(`${d.codeCampaign} - ${d.campaign}`));
+                return matchSearch && matchStatus && matchOsc && matchDepot && matchCamp;
+            });
 
             let totalItems = filtered.length; let totalPages = Math.ceil(totalItems / histItemsPerPage);
             if (histCurrentPage > totalPages && totalPages > 0) histCurrentPage = totalPages;
@@ -1480,26 +1316,7 @@
             paginated.forEach(r => {
                 let bdgColor = r.status === 'Done' ? 'bg-green-100 text-green-700' : (r.status === 'Not Yet' ? 'bg-gray-200 text-gray-700' : 'bg-orange-100 text-orange-700');
                 let bdg = `<span class="px-2 py-1 ${bdgColor} text-[10px] rounded uppercase font-bold">${r.status}</span>`;
-                rowsHtml += `<tr class="hover:bg-slate-50 transition-colors border-b border-gray-100">
-                    <td class="p-3.5 font-black text-blue-700 text-xs">${r.noDoc}</td>
-                    <td class="p-3.5"><button onclick="showDetailModal('toko', '${r.kodeToko}', '${r.namaToko}')" class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-semibold text-xs">${r.kodeToko}</button></td>
-                    <td class="p-3.5 font-bold text-gray-800 text-sm"><button onclick="showDetailModal('toko', '${r.kodeToko}', '${r.namaToko}')" class="hover:text-blue-600 transition-colors">${r.namaToko}</button></td>
-                    <td class="p-3.5 text-xs text-gray-600 font-medium">${r.codeCampaign}</td>
-                    <td class="p-3.5 text-sm text-gray-700 font-medium whitespace-normal" title="${r.campaign}">${r.campaign}</td>
-                    <td class="p-3.5 text-right font-black text-red-600 text-sm">Rp ${Number(r.totalClaim).toLocaleString('id-ID')}</td>
-                    <td class="p-3.5 text-center">${bdg}</td><td class="p-3.5 text-center text-xs font-medium text-gray-500">${r.tglProses}</td>
-                    <td class="p-3.5 text-center"><button onclick="toggleRowDetails('det-${r.noDoc}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase shadow-sm transition"><i class="fas fa-eye mr-1"></i> Details</button></td>
-                </tr>
-                <tr id="det-${r.noDoc}" class="hidden expanded-details">
-                    <td colspan="9" class="p-4">
-                        <div class="flex flex-wrap gap-4 text-xs">
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-upload mr-1"></i> Batch Upload</span> <span class="font-black text-gray-800">${r.batchUpload || '-'}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-check-double mr-1"></i> Batch Release</span> <span class="font-black text-gray-800">${r.batchRelease || '-'}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-paper-plane mr-1"></i> Batch Claim Fin</span> <span class="font-black text-gray-800">${r.batchClaim || '-'}</span></div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-hand-holding-usd mr-1"></i> Batch Clearing</span> <span class="font-black text-gray-800">${r.batchClearing || '-'}</span></div>
-                        </div>
-                    </td>
-                </tr>`;
+                rowsHtml += `<tr class="hover:bg-slate-50 transition-colors border-b border-gray-100"><td class="p-3.5 font-black text-blue-700 text-xs">${r.noDoc}</td><td class="p-3.5"><button onclick="showDetailModal('toko', '${r.kodeToko}', '${r.namaToko}')" class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-semibold text-xs">${r.kodeToko}</button></td><td class="p-3.5 font-bold text-gray-800 text-sm"><button onclick="showDetailModal('toko', '${r.kodeToko}', '${r.namaToko}')" class="hover:text-blue-600 transition-colors">${r.namaToko}</button></td><td class="p-3.5 text-xs text-gray-600 font-medium">${r.codeCampaign}</td><td class="p-3.5 text-sm text-gray-700 font-medium whitespace-normal" title="${r.campaign}">${r.campaign}</td><td class="p-3.5 text-right font-black text-red-600 text-sm">Rp ${Number(r.totalClaim).toLocaleString('id-ID')}</td><td class="p-3.5 text-center">${bdg}</td><td class="p-3.5 text-center text-xs font-medium text-gray-500">${r.tglProses}</td><td class="p-3.5 text-center"><button onclick="toggleRowDetails('det-${r.noDoc}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase shadow-sm transition"><i class="fas fa-eye mr-1"></i> Details</button></td></tr><tr id="det-${r.noDoc}" class="hidden expanded-details"><td colspan="9" class="p-4"><div class="flex flex-wrap gap-4 text-xs"><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-upload mr-1"></i> Batch Upload</span> <span class="font-black text-gray-800">${r.batchUpload || '-'}</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-check-double mr-1"></i> Batch Release</span> <span class="font-black text-gray-800">${r.batchRelease || '-'}</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-paper-plane mr-1"></i> Batch Claim Fin</span> <span class="font-black text-gray-800">${r.batchClaim || '-'}</span></div><div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200"><span class="font-bold text-gray-500 block mb-1 uppercase text-[9px]"><i class="fas fa-hand-holding-usd mr-1"></i> Batch Clearing</span> <span class="font-black text-gray-800">${r.batchClearing || '-'}</span></div></div></td></tr>`;
             });
             tb.innerHTML = rowsHtml; renderHistoryPagination(totalItems, totalPages);
         }
@@ -1507,26 +1324,15 @@
         function renderHistoryPagination(total, totalPages) {
             let container = document.getElementById('historyPagination'); if (!container) return;
             let start = total === 0 ? 0 : (histCurrentPage - 1) * histItemsPerPage + 1; let end = Math.min(histCurrentPage * histItemsPerPage, total);
-            container.innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 mt-5 px-3 bg-white p-3 border rounded-xl shadow-sm">
-                    <div class="mb-3 md:mb-0 font-medium">Menampilkan <span class="font-black text-gray-800">${start}</span> - <span class="font-black text-gray-800">${end}</span> dari <span class="font-black text-gray-800">${total}</span> Dokumen</div>
-                    <div class="flex items-center gap-4">
-                        <select onchange="histItemsPerPage = parseInt(this.value); renderHistoryTable(true)" class="border border-gray-300 rounded-lg px-3 py-1.5 bg-gray-50 font-bold text-gray-700"><option value="10" ${histItemsPerPage === 10 ? 'selected' : ''}>10 / Halaman</option><option value="25" ${histItemsPerPage === 25 ? 'selected' : ''}>25 / Halaman</option><option value="50" ${histItemsPerPage === 50 ? 'selected' : ''}>50 / Halaman</option></select>
-                        <nav class="flex rounded-lg shadow-sm overflow-hidden border border-gray-300">
-                            <button onclick="changeHistoryPage(${histCurrentPage - 1})" ${histCurrentPage === 1 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400"><i class="fas fa-chevron-left"></i></button>
-                            <span class="px-4 py-2 bg-gray-50 border-x border-gray-300 font-black text-gray-700">${histCurrentPage} / ${totalPages > 0 ? totalPages : 1}</span>
-                            <button onclick="changeHistoryPage(${histCurrentPage + 1})" ${histCurrentPage >= totalPages || totalPages === 0 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400"><i class="fas fa-chevron-right"></i></button>
-                        </nav>
-                    </div>
-                </div>`;
+            container.innerHTML = `<div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 mt-5 px-3 bg-white p-3 border rounded-xl shadow-sm"><div class="mb-3 md:mb-0 font-medium">Menampilkan <span class="font-black text-gray-800">${start}</span> - <span class="font-black text-gray-800">${end}</span> dari <span class="font-black text-gray-800">${total}</span> Dokumen</div><div class="flex items-center gap-4"><select onchange="histItemsPerPage = parseInt(this.value); renderHistoryTable(true)" class="border border-gray-300 rounded-lg px-3 py-1.5 bg-gray-50 font-bold text-gray-700"><option value="10" ${histItemsPerPage === 10 ? 'selected' : ''}>10 / Halaman</option><option value="25" ${histItemsPerPage === 25 ? 'selected' : ''}>25 / Halaman</option><option value="50" ${histItemsPerPage === 50 ? 'selected' : ''}>50 / Halaman</option></select><nav class="flex rounded-lg shadow-sm overflow-hidden border border-gray-300"><button onclick="changeHistoryPage(${histCurrentPage - 1})" ${histCurrentPage === 1 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400"><i class="fas fa-chevron-left"></i></button><span class="px-4 py-2 bg-gray-50 border-x border-gray-300 font-black text-gray-700">${histCurrentPage} / ${totalPages > 0 ? totalPages : 1}</span><button onclick="changeHistoryPage(${histCurrentPage + 1})" ${histCurrentPage >= totalPages || totalPages === 0 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400"><i class="fas fa-chevron-right"></i></button></nav></div></div>`;
         }
         function changeHistoryPage(page) { histCurrentPage = page; renderHistoryTable(false); }
 
         function renderSummary() {
             let so = checkMultiSelect('sumOscDropdown') ? checkMultiSelect('sumOscDropdown').split(', ') : []; let sd = checkMultiSelect('sumDepotDropdown') ? checkMultiSelect('sumDepotDropdown').split(', ') : []; let sc = checkMultiSelect('sumCampDropdown') ? checkMultiSelect('sumCampDropdown').split(', ') : []; let sy = checkMultiSelect('sumYearDropdown') ? checkMultiSelect('sumYearDropdown').split(', ') : [];
             let sm = {}; let tn = 0, td = 0, tr = 0;
-            globalCompileData.filter(c => { let yStr = c.campaignYear || "Lainnya"; return (sd.length === 0 || sd.includes(c.depotName)) && (sc.length === 0 || sc.includes(c.codeCampaign + " - " + c.campaign)) && (sy.length === 0 || sy.includes(yStr)); }).forEach(c => { let k = c.codeCampaign + "|" + c.campaign; if (!sm[k]) sm[k] = { name: c.campaign, code: c.codeCampaign, r: 0, n: 0, d: 0 }; sm[k].r += Number(c.reward) || 0; });
-            globalHistoryData.filter(d => { let yStr = d.campaignYear || "Lainnya"; return (so.length === 0 || so.includes(d.osc)) && (sd.length === 0 || sd.includes(d.depot)) && (sc.length === 0 || sc.includes(d.codeCampaign + " - " + d.campaign)) && (sy.length === 0 || sy.includes(yStr)); }).forEach(d => { let k = d.codeCampaign + "|" + d.campaign; if (!sm[k]) sm[k] = { name: d.campaign, code: d.codeCampaign, r: 0, n: 0, d: 0 }; let v = Number(d.totalClaim) || 0; if (d.status === 'Done') { sm[k].d += v; td += v; } else if (d.status === 'Submitted') { sm[k].n += v; tn += v; } });
+            globalCompileData.filter(c => { return (sd.length === 0 || sd.includes(c.depotName)) && (sc.length === 0 || sc.includes(c.codeCampaign + " - " + c.campaign)) && (sy.length === 0 || sy.includes(c.validYear)); }).forEach(c => { let k = c.codeCampaign + "|" + c.campaign; if (!sm[k]) sm[k] = { name: c.campaign, code: c.codeCampaign, r: 0, n: 0, d: 0 }; sm[k].r += Number(c.reward) || 0; });
+            globalHistoryData.filter(d => { return (so.length === 0 || so.includes(d.osc)) && (sd.length === 0 || sd.includes(d.depot)) && (sc.length === 0 || sc.includes(d.codeCampaign + " - " + d.campaign)) && (sy.length === 0 || sy.includes(d.validYear)); }).forEach(d => { let k = d.codeCampaign + "|" + d.campaign; if (!sm[k]) sm[k] = { name: d.campaign, code: d.codeCampaign, r: 0, n: 0, d: 0 }; let v = Number(d.totalClaim) || 0; if (d.status === 'Done') { sm[k].d += v; td += v; } else if (d.status === 'Submitted') { sm[k].n += v; tn += v; } });
             let tb = document.getElementById('summaryTableBody'); let rowsHtml = '';
             for (let k in sm) {
                 let s = sm[k]; tr += s.r; let sisa = Math.max(0, s.r - s.d - s.n); let pt = s.r > 0 ? ((s.d / s.r) * 100).toFixed(2) + '%' : '0%';
@@ -1551,20 +1357,21 @@
                 filtered = globalHistoryData.filter(d => d.kodeToko === code);
                 filtered.sort((a, b) => { return new Date(b.tglUpload || 0) - new Date(a.tglUpload || 0); });
 
-                document.getElementById('detailModalHead').innerHTML = `<tr><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">No Doc</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Campaign</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Tgl Upload</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Tgl Release</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Tgl Claim Fin</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Tgl Clearing</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">CB Net</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Status</th></tr>`;
+                document.getElementById('detailModalHead').innerHTML = `<tr><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">No Doc</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Campaign</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Tgl Pencairan (Clearing)</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">CB Net</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-center">Status</th></tr>`;
                 filtered.forEach(d => {
                     let val = Number(d.totalClaim) || 0; let bdgColor = d.status === 'Done' ? 'bg-green-100 text-green-700' : (d.status === 'Not Yet' ? 'bg-gray-200 text-gray-700' : 'bg-orange-100 text-orange-700');
                     let bdg = `<span class="px-2 py-1 ${bdgColor} text-[10px] rounded uppercase font-bold">${d.status}</span>`;
-                    rowsHtml += `<tr class="hover:bg-blue-50 border-b"><td class="p-3 font-semibold">${d.noDoc}</td><td class="p-3 font-bold whitespace-normal">${d.campaign}</td><td class="p-3 text-xs text-gray-600">${d.tglUpload || '-'}</td><td class="p-3 text-xs text-gray-600">${d.tglRelease || '-'}</td><td class="p-3 text-xs text-gray-600">${d.tglClaimFin || '-'}</td><td class="p-3 text-xs text-green-600 font-bold">${d.tglClearing || '-'}</td><td class="p-3 text-right font-bold text-red-600">${val.toLocaleString('id-ID')}</td><td class="p-3 text-center">${bdg}</td></tr>`;
+                    let tglDisplay = d.status === 'Done' ? (d.tglClearing || '-') : '-';
+                    rowsHtml += `<tr class="hover:bg-blue-50 border-b"><td class="p-3 font-semibold">${d.noDoc}</td><td class="p-3 font-bold whitespace-normal">${d.campaign}</td><td class="p-3 text-center text-xs text-green-600 font-bold">${tglDisplay}</td><td class="p-3 text-right font-bold text-red-600">${val.toLocaleString('id-ID')}</td><td class="p-3 text-center">${bdg}</td></tr>`;
                 });
             } else if (type === 'campaign') {
                 document.getElementById('detailModalSubtitle').innerText = "Campaign: " + code + " - " + name;
                 let sy = checkMultiSelect('sumYearDropdown') ? checkMultiSelect('sumYearDropdown').split(', ') : []; let so = checkMultiSelect('sumOscDropdown') ? checkMultiSelect('sumOscDropdown').split(', ') : []; let sd = checkMultiSelect('sumDepotDropdown') ? checkMultiSelect('sumDepotDropdown').split(', ') : [];
                 let depotAgg = {};
-                globalCompileData.filter(c => c.codeCampaign === code).filter(c => { let yStr = c.campaignYear || "Lainnya"; return (sd.length === 0 || sd.includes(c.depotName)) && (sy.length === 0 || sy.includes(yStr)); }).forEach(c => { if(!depotAgg[c.depotName]) depotAgg[c.depotName] = { reward: 0, submitted: 0, done: 0 }; depotAgg[c.depotName].reward += Number(c.reward) || 0; t_reward += Number(c.reward) || 0; });
-                globalHistoryData.filter(d => d.codeCampaign === code).filter(d => { let yStr = d.campaignYear || "Lainnya"; return (so.length === 0 || so.includes(d.osc)) && (sd.length === 0 || sd.includes(d.depot)) && (sy.length === 0 || sy.includes(yStr)); }).forEach(d => { if(!depotAgg[d.depot]) depotAgg[d.depot] = { reward: 0, submitted: 0, done: 0 }; let v = Number(d.totalClaim) || 0; if (d.status === 'Done') { depotAgg[d.depot].done += v; t_done += v; } else if (d.status === 'Submitted') { depotAgg[d.depot].submitted += v; t_submitted += v; } });
+                globalCompileData.filter(c => c.codeCampaign === code).filter(c => { return (sd.length === 0 || sd.includes(c.depotName)) && (sy.length === 0 || sy.includes(c.validYear)); }).forEach(c => { if(!depotAgg[c.depotName]) depotAgg[c.depotName] = { reward: 0, submitted: 0, done: 0 }; depotAgg[c.depotName].reward += Number(c.reward) || 0; t_reward += Number(c.reward) || 0; });
+                globalHistoryData.filter(d => d.codeCampaign === code).filter(d => { return (so.length === 0 || so.includes(d.osc)) && (sd.length === 0 || sd.includes(d.depot)) && (sy.length === 0 || sy.includes(d.validYear)); }).forEach(d => { if(!depotAgg[d.depot]) depotAgg[d.depot] = { reward: 0, submitted: 0, done: 0 }; let v = Number(d.totalClaim) || 0; if (d.status === 'Done') { depotAgg[d.depot].done += v; t_done += v; } else if (d.status === 'Submitted') { depotAgg[d.depot].submitted += v; t_submitted += v; } });
 
-                document.getElementById('detailModalHead').innerHTML = `<tr><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Depot</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">Total Reward (Rp)</th><th class="p-3 text-[10px] font-black text-orange-600 uppercase tracking-wider text-right">Pengajuan (Rp)</th><th class="p-3 text-[10px] font-black text-green-600 uppercase tracking-wider text-right">Sudah Cair (Rp)</th><th class="p-3 text-[10px] font-black text-red-600 uppercase tracking-wider text-right">Sisa (Rp)</th><th class="p-3 text-[10px] font-black text-purple-700 uppercase tracking-wider text-center">% Cair</th></tr>`;
+                document.getElementById('detailModalHead').innerHTML = `<tr><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider">Depot</th><th class="p-3 text-[10px] font-black text-gray-500 uppercase tracking-wider text-right">Target Reward (Rp)</th><th class="p-3 text-[10px] font-black text-orange-600 uppercase tracking-wider text-right">Pengajuan (Rp)</th><th class="p-3 text-[10px] font-black text-green-600 uppercase tracking-wider text-right">Sudah Cair (Rp)</th><th class="p-3 text-[10px] font-black text-red-600 uppercase tracking-wider text-right">Sisa (Rp)</th><th class="p-3 text-[10px] font-black text-purple-700 uppercase tracking-wider text-center">% Cair</th></tr>`;
                 
                 for(let dep in depotAgg) {
                     let agg = depotAgg[dep]; if(agg.reward === 0 && agg.submitted === 0 && agg.done === 0) continue;
@@ -1574,7 +1381,7 @@
                 }
             }
 
-            document.getElementById('detailMetricsDialog').innerHTML = `<div class="flex justify-between items-center text-[10px] w-full"><span class="text-blue-800 font-bold uppercase">Target / Hak Total</span><span class="font-black text-blue-900 bg-blue-100 px-2 rounded tracking-wide text-xs">Rp ${t_reward.toLocaleString('id-ID')}</span></div><div class="flex justify-between items-center text-[10px] w-full mt-1 border-t border-blue-100 pt-1"><span class="text-gray-500 font-bold uppercase">Sedang Diajukan</span><span class="font-bold text-orange-600 bg-white px-2 rounded shadow-sm text-xs">Rp ${t_submitted.toLocaleString('id-ID')}</span></div><div class="flex justify-between items-center text-[10px] w-full mt-1 border-t border-blue-100 pt-1"><span class="text-gray-500 font-bold uppercase">Sudah Cair</span><span class="font-bold text-green-600 bg-white px-2 rounded shadow-sm text-xs">Rp ${t_done.toLocaleString('id-ID')}</span></div>`;
+            document.getElementById('detailMetricsDialog').innerHTML = `<div class="flex justify-between items-center text-[10px] w-full"><span class="text-blue-800 font-bold uppercase">Total Reward</span><span class="font-black text-blue-900 bg-blue-100 px-2 rounded tracking-wide text-xs">Rp ${t_reward.toLocaleString('id-ID')}</span></div><div class="flex justify-between items-center text-[10px] w-full mt-1 border-t border-blue-100 pt-1"><span class="text-gray-500 font-bold uppercase">Sedang Diajukan</span><span class="font-bold text-orange-600 bg-white px-2 rounded shadow-sm text-xs">Rp ${t_submitted.toLocaleString('id-ID')}</span></div><div class="flex justify-between items-center text-[10px] w-full mt-1 border-t border-blue-100 pt-1"><span class="text-gray-500 font-bold uppercase">Sudah Cair</span><span class="font-bold text-green-600 bg-white px-2 rounded shadow-sm text-xs">Rp ${t_done.toLocaleString('id-ID')}</span></div>`;
             if (filtered.length === 0) rowsHtml = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Tidak ada data untuk dirender.</td></tr>`;
             document.getElementById('detailModalBody').innerHTML = rowsHtml;
 
@@ -1595,7 +1402,6 @@
                 let res = await fetchApp({ action: 'getManageableData', requesterId: currentUserData.userId, requesterRole: role });
                 if (res.status === 'success') { 
                     currentManageableUsers = res.users || []; 
-                    
                     let rawDepots = (role === 'system manager' || role === 'supervisor') ? res.allDepots : res.managedDepots;
                     globalDepotList = [];
                     (rawDepots || []).forEach(d => { 
@@ -1607,9 +1413,7 @@
                     });
                     globalDepotList = globalDepotList.filter((v, i, a) => a.findIndex(t => (t.kode === v.kode)) === i);
                     globalDepotList.sort((a, b) => a.kode.localeCompare(b.kode));
-
-                    renderManageAccessCards(); 
-                    renderProfileRequestsList(res.profileRequests || []); 
+                    renderManageAccessCards(); renderProfileRequestsList(res.profileRequests || []); 
                 }
             } catch (e) { showNotification("Gagal memuat Data Kelola Akses.", "error"); } finally { hideLoadingOverlay(); }
         }
@@ -1658,29 +1462,18 @@
                 let actColor = isAct ? 'text-green-600' : 'text-red-600';
                 let reqPinHtml = u.pinStatus === 'pending' ? `<span class="px-2 py-0.5 text-[9px] bg-orange-500 text-white rounded font-bold ml-2 animate-pulse uppercase tracking-wider">Req PIN</span>` : '';
 
-                rowsHtml += `<tr class="hover:bg-blue-50 border-b border-gray-100">
-                    <td class="p-2 text-center"><button type="button" data-userid="${u.userId}" onclick="openEditModal(this.getAttribute('data-userid'))" class="bg-white hover:bg-blue-50 text-blue-600 font-bold border border-blue-200 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fas fa-edit mr-1"></i> Kelola</button></td>
-                    <td class="p-2 font-black text-gray-800 text-sm">${u.userId}</td>
-                    <td class="p-2 font-bold text-gray-700 text-sm">${u.namaLengkap || '-'}</td>
-                    <td class="p-2 text-center"><span class="px-2 py-0.5 text-[9px] uppercase font-black rounded ${roleColor} inline-block shadow-sm border border-gray-200">${u.role}</span></td>
-                    <td class="p-2 text-gray-600 text-xs">${u.email || '-'}</td>
-                    <td class="p-2 text-sm"><span class="font-bold text-gray-800">${u.kodeDepot}</span> - ${u.depotName || '-'}</td>
-                    <td class="p-2 text-center font-bold ${actColor} text-xs">${actLabel} ${reqPinHtml}</td>
-                </tr>`;
+                rowsHtml += `<tr class="hover:bg-blue-50 border-b border-gray-100"><td class="p-2 text-center"><button type="button" data-userid="${u.userId}" onclick="openEditModal(this.getAttribute('data-userid'))" class="bg-white hover:bg-blue-50 text-blue-600 font-bold border border-blue-200 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fas fa-edit mr-1"></i> Kelola</button></td><td class="p-2 font-black text-gray-800 text-sm">${u.userId}</td><td class="p-2 font-bold text-gray-700 text-sm">${u.namaLengkap || '-'}</td><td class="p-2 text-center"><span class="px-2 py-0.5 text-[9px] uppercase font-black rounded ${roleColor} inline-block shadow-sm border border-gray-200">${u.role}</span></td><td class="p-2 text-gray-600 text-xs">${u.email || '-'}</td><td class="p-2 text-sm"><span class="font-bold text-gray-800">${u.kodeDepot}</span> - ${u.depotName || '-'}</td><td class="p-2 text-center font-bold ${actColor} text-xs">${actLabel} ${reqPinHtml}</td></tr>`;
             });
             tb.innerHTML = rowsHtml;
         }
 
         function openEditModal(userIdToEdit) {
             const u = currentManageableUsers.find(x => String(x.userId) === String(userIdToEdit)); if (!u) return;
-
             document.getElementById('editUserId').value = u.userId; document.getElementById('editUserDisplay').innerText = u.userId; document.getElementById('editRoleDisplay').innerText = `Role: ${u.role}`;
-
             let a = u.auth || {};
             document.getElementById('editActivation').value = a.i || 'Active'; document.getElementById('editModJ').value = a.j || 'Yes'; document.getElementById('editModK').value = a.k || 'Yes'; document.getElementById('editModL').value = a.l || 'Yes'; document.getElementById('editModM').value = a.m || 'Yes'; document.getElementById('editModN').value = a.n || 'Hidden'; document.getElementById('editModP').value = a.p || 'No';
 
             setHiddenSafely('editAssignOscContainer', true); setHiddenSafely('editAssignDepotContainer', true);
-
             let role = currentUserData.sysRole || currentUserData.role || '';
             if (role === 'system manager' || role === 'supervisor') {
                 setHiddenSafely('editSpvSection', false);
@@ -1705,22 +1498,15 @@
         async function saveUserAccess() {
             setHiddenSafely('saveAccessLoader', false); setDisabledSafely('btnSaveAccess', true);
             try {
-                let reqPayload = {
-                    targetUserId: document.getElementById('editUserId').value,
-                    auth: { i: document.getElementById('editActivation').value, j: document.getElementById('editModJ').value, k: document.getElementById('editModK').value, l: document.getElementById('editModL').value, m: document.getElementById('editModM').value, n: document.getElementById('editModN').value, p: document.getElementById('editModP').value },
-                    approvePin: document.getElementById('editApprovePin')?.checked
-                };
-                
+                let reqPayload = { targetUserId: document.getElementById('editUserId').value, auth: { i: document.getElementById('editActivation').value, j: document.getElementById('editModJ').value, k: document.getElementById('editModK').value, l: document.getElementById('editModL').value, m: document.getElementById('editModM').value, n: document.getElementById('editModN').value, p: document.getElementById('editModP').value }, approvePin: document.getElementById('editApprovePin')?.checked };
                 let targetRoleEl = document.getElementById('editRoleInput');
                 if (targetRoleEl && !targetRoleEl.closest('div').classList.contains('hidden')) { reqPayload.targetRole = targetRoleEl.value; }
-
                 let role = currentUserData.sysRole || currentUserData.role || '';
                 if (role === 'system manager' || role === 'supervisor') { 
                     let uRole = reqPayload.targetRole || document.getElementById('editRoleDisplay').innerText.replace("Role: ", "").toLowerCase(); 
                     if (uRole === 'admin') reqPayload.assignOsc = checkMultiSelect('editAssignOscDrop'); 
                     else if (uRole === 'osc' || uRole === 'non-osc') reqPayload.assignDepots = checkMultiSelect('editAssignDepotDrop'); 
                 }
-
                 let res = await fetchApp({ action: 'updateUserAccess', requesterRole: role, data: reqPayload });
                 if (res.status === 'success') { showNotification("Akses berhasil diperbarui!", "success"); logActivity('Mengubah hak akses user: ' + document.getElementById('editUserId').value); closeEditModal(); fetchManageableData(); }
             } catch (e) { showNotification("Gagal terhubung ke server.", "error"); closeEditModal(); }
@@ -1728,16 +1514,10 @@
         }
 
         function updateMultiSelectLabel(dropdownId, spanElement) {
-            if(!spanElement) return;
-            let c = document.getElementById(dropdownId);
-            if (!c) return;
+            if(!spanElement) return; let c = document.getElementById(dropdownId); if (!c) return;
             let cb = c.querySelectorAll('input[type="checkbox"]:checked');
             if (cb.length === 0) spanElement.innerText = "-- Semua --";
-            else {
-                let l = [];
-                cb.forEach(b => { if (b.value !== 'ALL') l.push(b.nextElementSibling.innerText); });
-                spanElement.innerText = l.length > 1 ? l.length + " Dipilih" : l.join(', ');
-            }
+            else { let l = []; cb.forEach(b => { if (b.value !== 'ALL') l.push(b.nextElementSibling.innerText); }); spanElement.innerText = l.length > 1 ? l.length + " Dipilih" : l.join(', '); }
         }
 
         function updateAddDepotName() { let sel = document.getElementById('addDepotCode').value; let fd = globalDepotList.find(d => d.kode === sel); document.getElementById('addDepotNameDisplay').value = fd ? fd.nama : ''; }
@@ -1753,9 +1533,7 @@
             document.getElementById('addAssignOscDrop').innerHTML = buildMultiselectHTML(currentManageableUsers.filter(u => u.role.toLowerCase() === 'osc').map(u => ({ label: u.userId, value: u.userId })), false, 'addAssignOscDrop'); 
             document.getElementById('addAssignAdminDrop').innerHTML = buildMultiselectHTML(globalDepotList.map(d => ({ label: `${d.kode} - ${d.nama}`, value: d.kode })), true, 'addAssignAdminDrop');
             
-            depotSelect.disabled = false; 
-            globalDepotList.forEach(d => { depotSelect.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`; }); 
-            handleAddRoleChange();
+            depotSelect.disabled = false; globalDepotList.forEach(d => { depotSelect.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`; }); handleAddRoleChange();
         }
 
         function handleAddRoleChange() {
@@ -1795,9 +1573,7 @@
         
         function renderLogTable() {
             let tb = document.getElementById('logTableBody'); if(!tb) return;
-            let fUser = (document.getElementById('logFilterUser')?.value || "").toLowerCase();
-            let fJenis = (document.getElementById('logFilterJenis')?.value || "").toLowerCase();
-            let fDate = document.getElementById('logFilterDate')?.value || "";
+            let fUser = (document.getElementById('logFilterUser')?.value || "").toLowerCase(); let fJenis = (document.getElementById('logFilterJenis')?.value || "").toLowerCase(); let fDate = document.getElementById('logFilterDate')?.value || "";
 
             let logs = (window.globalLogs || []).filter(l => {
                 let matchUser = !fUser || l.userId.toLowerCase().includes(fUser);
@@ -1806,20 +1582,14 @@
                 if (fDate) {
                     let d = new Date(l.timestamp);
                     if (!isNaN(d.getTime())) {
-                        let m = String(d.getMonth() + 1).padStart(2, '0');
-                        let dy = String(d.getDate()).padStart(2, '0');
-                        let y = d.getFullYear();
-                        let dStr = `${y}-${m}-${dy}`;
-                        matchDate = (dStr === fDate);
+                        let m = String(d.getMonth() + 1).padStart(2, '0'); let dy = String(d.getDate()).padStart(2, '0'); let y = d.getFullYear();
+                        let dStr = `${y}-${m}-${dy}`; matchDate = (dStr === fDate);
                     }
                 }
                 return matchUser && matchJenis && matchDate;
             });
 
-            if (logs.length === 0) { 
-                tb.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">Tidak ada log aktivitas.</td></tr>`; 
-                document.getElementById('logPagination').innerHTML = ''; return; 
-            }
+            if (logs.length === 0) { tb.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">Tidak ada log aktivitas.</td></tr>`; document.getElementById('logPagination').innerHTML = ''; return; }
 
             let totalItems = logs.length; let totalPages = Math.ceil(totalItems / logItemsPerPage);
             if (logCurrentPage > totalPages && totalPages > 0) logCurrentPage = totalPages;
@@ -1833,17 +1603,7 @@
         function renderLogPagination(total, totalPages) {
             let container = document.getElementById('logPagination'); if (!container) return;
             let start = total === 0 ? 0 : (logCurrentPage - 1) * logItemsPerPage + 1; let end = Math.min(logCurrentPage * logItemsPerPage, total);
-            container.innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 mt-5 px-3 bg-white p-3 border rounded-xl shadow-sm">
-                    <div class="mb-3 md:mb-0 font-medium">Menampilkan <span class="font-black text-gray-800">${start}</span> - <span class="font-black text-gray-800">${end}</span> dari <span class="font-black text-gray-800">${total}</span> Logs</div>
-                    <div class="flex items-center gap-4">
-                        <nav class="flex rounded-lg shadow-sm overflow-hidden border border-gray-300">
-                            <button onclick="logCurrentPage--; renderLogTable()" ${logCurrentPage === 1 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"><i class="fas fa-chevron-left"></i></button>
-                            <span class="px-4 py-2 bg-gray-50 border-x border-gray-300 font-black text-gray-700">${logCurrentPage} / ${totalPages > 0 ? totalPages : 1}</span>
-                            <button onclick="logCurrentPage++; renderLogTable()" ${logCurrentPage >= totalPages || totalPages === 0 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"><i class="fas fa-chevron-right"></i></button>
-                        </nav>
-                    </div>
-                </div>`;
+            container.innerHTML = `<div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 mt-5 px-3 bg-white p-3 border rounded-xl shadow-sm"><div class="mb-3 md:mb-0 font-medium">Menampilkan <span class="font-black text-gray-800">${start}</span> - <span class="font-black text-gray-800">${end}</span> dari <span class="font-black text-gray-800">${total}</span> Logs</div><div class="flex items-center gap-4"><nav class="flex rounded-lg shadow-sm overflow-hidden border border-gray-300"><button onclick="logCurrentPage--; renderLogTable()" ${logCurrentPage === 1 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"><i class="fas fa-chevron-left"></i></button><span class="px-4 py-2 bg-gray-50 border-x border-gray-300 font-black text-gray-700">${logCurrentPage} / ${totalPages > 0 ? totalPages : 1}</span><button onclick="logCurrentPage++; renderLogTable()" ${logCurrentPage >= totalPages || totalPages === 0 ? 'disabled' : ''} class="px-4 py-2 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"><i class="fas fa-chevron-right"></i></button></nav></div></div>`;
         }
 
         function openRequestPinModal() { document.getElementById('reqNewPin').value = ''; setHiddenSafely('requestPinModal', false); }
