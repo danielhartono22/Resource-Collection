@@ -783,11 +783,6 @@
             ];
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws_data), "Template"); XLSX.writeFile(wb, "Template_Upload_Claim.xlsx");
         }
-        
-        let batchNumberCounter = { '01': 0, '02': 0, '03': 0, '04': 0 }; let lastBatchCounterDate = null;
-        function getTodayDateDDMMYY() { const now = new Date(); return String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0') + String(now.getFullYear()).slice(-2); }
-        function checkAndResetBatchCounter() { const td = getTodayDateDDMMYY(); if (lastBatchCounterDate !== td) { lastBatchCounterDate = td; batchNumberCounter = { '01': 0, '02': 0, '03': 0, '04': 0 }; } }
-        function generateBatchNumber(stageCode, campaignCode) { checkAndResetBatchCounter(); const ct = String(campaignCode || '00').padStart(2, '0').substring(0, 2); batchNumberCounter[stageCode]++; const cnt = String(batchNumberCounter[stageCode]).padStart(4, '0'); return stageCode + ct + getTodayDateDDMMYY() + cnt; }
 
         let globalHistoryData = []; let globalCompileData = []; let globalReleaseData = []; let globalClaimFinData = []; let globalClearingData = []; let globalProfileRequests = []; let summaryChartInstance = null; let detailChartInstance = null; let currentManageableUsers = []; let globalDepotList = []; let pinAttempts = {};
         
@@ -1139,19 +1134,23 @@
         function submitUploadAction() { if (hasMasterUpdateFlag) { document.getElementById('confirmMasterModal').classList.remove('hidden'); } else { submitMassClaim(); } }
         function confirmAndSubmitMass() { document.getElementById('confirmMasterModal').classList.add('hidden'); submitMassClaim(); }
 
-        async function submitMassClaim() {
+       async function submitMassClaim() {
             setDisabledSafely('btnSubmitUpload', true); setHiddenSafely('submitLoaderUpload', false);
             let checkedDocs = []; document.querySelectorAll('.cb-upload:checked').forEach(c => checkedDocs.push(c.value)); let dataToSubmit = massUploadDataValid.filter(d => checkedDocs.includes(d.noDoc));
             try {
-                let batchNum = generateBatchNumber('01', dataToSubmit.length > 0 ? dataToSubmit[0].codeCampaign : '00');
-                let dataWithBatch = dataToSubmit.map(item => { return { ...item, batchNumUpload: batchNum }; });
-                let res = await fetchApp({ action: 'submitData', userData: currentUserData, data: dataWithBatch });
+                // Langsung kirim dataToSubmit tanpa generate batch
+                let res = await fetchApp({ action: 'submitData', userData: currentUserData, data: dataToSubmit });
+                
                 if (res.status === 'success' || res.status === 'warning') { 
+                    let batchNum = res.summary?.batchNum || "-"; // Ambil batch dari response backend
                     let succDocs = res.summary?.successfulDocs || [];
-                    let successDetails = dataWithBatch.filter(d => succDocs.includes(d.noDoc.toUpperCase())).map(d => ({
+                    
+                    // BAGIAN YANG DIPERBAIKI (Tanda kurung disesuaikan)
+                    let successDetails = dataToSubmit.filter(d => succDocs.includes(d.noDoc.toUpperCase())).map(d => ({
                         noDoc: d.noDoc, kodeCamp: d.codeCampaign, namaCamp: d.campaignName, kodeToko: d.custCode, namaToko: d.custName, reward: d.cbNet || d.totTagih
                     }));
-                    logActivity(`Claim Upload Web: ${res.summary?.successCount || dataWithBatch.length} dokumen. No Batch: ${batchNum}`); 
+                    
+                    logActivity(`Claim Upload Web: ${res.summary?.successCount || dataToSubmit.length} dokumen. No Batch: ${batchNum}`); 
                     showActionResult("Laporan Eksekusi Upload Data", successDetails, [], "Upload", batchNum);
                     resetInputGrid(); cancelPreview(); setHiddenSafely('uploadModuleTabs', false);
                 } else { showNotification(res.message, "error"); }
@@ -1242,12 +1241,16 @@
             let tglProses = ""; if (type === 'clearing' && actionType === 'approve') { let dt = document.getElementById('tglClearingInput').value; if (dt) { let pts = dt.split('-'); tglProses = pts[2] + '-' + pts[1] + '-' + pts[0]; } }
             let stageCode = '00', dataSource = [];
             if (type === 'release') { stageCode = '02'; dataSource = globalReleaseData; } else if (type === 'claim') { stageCode = '03'; dataSource = globalClaimFinData; } else if (type === 'clearing') { stageCode = '04'; dataSource = globalClearingData; }
-            let batchMapping = {};
-            if (actionType === 'approve') { let batchNum = generateBatchNumber(stageCode, docs.length > 0 ? dataSource.find(d => d.noDoc === docs[0])?.codeCampaign || '00' : '00'); docs.forEach(noDoc => { batchMapping[noDoc] = batchNum; }); }
+            
+            // Hapus batchMapping lokal dan langsung eksekusi try
             try {
-                let res = await fetchApp({ action: 'processWorkflow', docsToProcess: docs, workflowType: type, actionType: actionType, tglProses: tglProses, userData: currentUserData, batchMapping: batchMapping });
+                // Kirim request tanpa menyertakan batchMapping
+                let res = await fetchApp({ action: 'processWorkflow', docsToProcess: docs, workflowType: type, actionType: actionType, tglProses: tglProses, userData: currentUserData });
+                
                 if (res.status === 'success') { 
-                    let uniqueBatches = [...new Set(Object.values(batchMapping))].filter(b => b !== "-"); let batchNum = uniqueBatches.length > 0 ? uniqueBatches[0] : null; let batchMsg = actionType === 'approve' && batchNum ? `. No Batch: ${batchNum}` : '';
+                    // Ambil batchNum langsung dari summary backend
+                    let batchNum = res.summary?.batchNum || null; 
+                    let batchMsg = actionType === 'approve' && batchNum ? `. No Batch: ${batchNum}` : '';
                     let succDocs = res.summary?.successfulDocs || [];
                     let successDetails = dataSource.filter(d => succDocs.includes(d.noDoc)).map(d => {
                         let pBatch = '-'; if (type === 'release') pBatch = d.batchUpload; else if (type === 'claim') pBatch = d.batchRelease; else if (type === 'clearing') pBatch = d.batchClaim;
